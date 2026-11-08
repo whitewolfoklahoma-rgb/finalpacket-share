@@ -1,0 +1,1291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FinalPacket — Case Paperwork Packet (Demo)</title>
+<style>
+  :root{
+    --ink:#23272e; --ink2:#39404a; --mut:#5d6774; --line:#d9dce1;
+    --bg:#f2f1ec; --card:#ffffff; --accent:#5a6e57; --accent2:#33526e;
+    --brass:#8a6d2f; --red:#9c3226; --redbg:#fbf0ee; --amber:#7c5800; --amberbg:#faf3dd;
+    --green:#33603c; --greenbg:#edf4ee; --greybg:#eef0ee;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{font-family:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; background:var(--bg); color:var(--ink); font-size:14px;}
+  header{background:#262b31; color:#fff; padding:14px 28px; display:flex; align-items:center; gap:18px; flex-wrap:wrap;}
+  header .logo{font-family:Georgia,"Times New Roman",serif; font-size:21px; font-weight:700; letter-spacing:.3px;}
+  header .logo span{color:#c9a959;}
+  header .sub{color:#c3cad2; font-size:12.5px;}
+  header .demo-badge{margin-left:auto; background:#c9a959; color:#241c04; font-weight:700; font-size:12px; padding:5px 12px; border-radius:20px; text-transform:uppercase; letter-spacing:.6px;}
+  .companybar{background:#39404a; color:#dde2e8; padding:8px 28px; font-size:13px; display:flex; gap:24px; flex-wrap:wrap;}
+  .companybar b{color:#fff;}
+  nav{display:flex; gap:4px; background:#fff; border-bottom:1px solid var(--line); padding:0 20px; position:sticky; top:0; z-index:5; flex-wrap:wrap;}
+  nav button{background:none; border:none; border-bottom:3px solid transparent; padding:13px 13px; font-size:14px; font-weight:600; color:var(--mut); cursor:pointer; min-height:48px;}
+  nav button:hover{color:var(--ink);}
+  nav button.active{color:var(--ink); border-bottom-color:var(--brass);}
+  main{max-width:1180px; margin:0 auto; padding:24px 20px 40px;}
+  section.panel{display:none;}
+  section.panel.active{display:block;}
+  h2{font-family:Georgia,"Times New Roman",serif; font-size:19px; margin-bottom:4px; color:var(--ink);}
+  h3{font-size:15px; color:var(--ink2); margin:18px 0 8px;}
+  .pdesc{color:var(--mut); margin-bottom:18px; font-size:13px; max-width:78ch;}
+  .cards{display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:16px; margin-bottom:22px;}
+  .card{background:var(--card); border:1px solid var(--line); border-radius:10px; padding:18px 20px;}
+  .card .lbl{font-size:12px; text-transform:uppercase; letter-spacing:.7px; color:var(--mut); font-weight:700;}
+  .card .big{font-size:28px; font-weight:800; margin:6px 0 2px; color:var(--ink);}
+  .card .note{font-size:12.5px; color:var(--mut);}
+  .card.risk .big{color:var(--red);}
+  .card.warn .big{color:var(--amber);}
+  .card.good .big{color:var(--green);}
+  .riskbanner{background:var(--redbg); border:1px solid #ecc9c3; color:#6d231a; border-radius:10px; padding:14px 18px; margin-bottom:22px; font-size:13.5px;}
+  .riskbanner b{color:var(--red);}
+  .okbanner{background:var(--greenbg); border:1px solid #c4d8c6; color:#274d2e; border-radius:10px; padding:12px 18px; margin-bottom:18px; font-size:13.5px;}
+  .notebox{background:var(--greybg); border:1px solid var(--line); border-radius:10px; padding:14px 18px; margin-bottom:18px; font-size:13px; color:var(--ink2);}
+  .notebox b{color:var(--ink);}
+  .tblwrap{overflow-x:auto; background:var(--card); border:1px solid var(--line); border-radius:10px; margin-bottom:22px;}
+  table.tbl{border-collapse:collapse; width:100%; min-width:640px;}
+  table.tbl th, table.tbl td{padding:10px 12px; text-align:left; border-bottom:1px solid var(--line); font-size:13.5px; vertical-align:top;}
+  table.tbl th{background:var(--greybg); font-size:12px; text-transform:uppercase; letter-spacing:.5px; color:var(--mut);}
+  table.tbl tr:last-child td{border-bottom:none;}
+  .pill{display:inline-block; padding:2px 10px; border-radius:20px; font-size:12px; font-weight:700;}
+  .pill.ok{background:var(--greenbg); color:var(--green);}
+  .pill.warn{background:var(--amberbg); color:var(--amber);}
+  .pill.bad{background:var(--redbg); color:var(--red);}
+  .pill.grey{background:var(--greybg); color:var(--mut);}
+  .btn{display:inline-block; background:var(--accent2); color:#fff; border:none; border-radius:8px; padding:10px 18px; font-size:14px; font-weight:600; cursor:pointer; min-height:48px; text-decoration:none;}
+  .btn:hover{background:#284259;}
+  .btn.primary{background:var(--accent);}
+  .btn.primary:hover{background:#495c47;}
+  .btn.plain{background:#fff; color:var(--ink2); border:1px solid var(--line);}
+  .btn.plain:hover{background:var(--greybg);}
+  .btn.danger{background:var(--red);}
+  .btn:disabled{opacity:.45; cursor:not-allowed;}
+  .rowbtn{background:#fff; border:1px solid var(--line); color:var(--accent2); border-radius:6px; padding:6px 10px; font-size:12.5px; font-weight:600; cursor:pointer; min-height:36px; margin-right:4px;}
+  .rowbtn:hover{background:var(--greybg);}
+  .grid2{display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:14px 18px;}
+  .grid3{display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:14px 18px;}
+  .fld label{display:block; font-size:12.5px; font-weight:600; color:var(--ink2); margin-bottom:4px;}
+  .fld .req{color:var(--red); font-weight:700;}
+  .inwrap{display:flex; gap:6px; align-items:stretch;}
+  .inwrap input, .inwrap textarea, .fld > input, .fld > select, .fld > textarea{flex:1; width:100%; padding:10px 12px; border:1px solid var(--line); border-radius:8px; font-size:14px; font-family:inherit; background:#fff; color:var(--ink); min-height:48px;}
+  .inwrap textarea, .fld > textarea{min-height:76px; resize:vertical;}
+  .mic{flex:0 0 auto; width:48px; min-height:48px; border:1px solid var(--line); background:#fff; border-radius:8px; font-size:19px; cursor:pointer;}
+  .mic:hover{background:var(--greybg);}
+  .mic.listening{background:var(--amberbg); border-color:var(--amber);}
+  .formcard{background:var(--card); border:1px solid var(--line); border-radius:10px; padding:20px; margin-bottom:20px;}
+  .savedmsg{font-size:13px; color:var(--green); font-weight:600; margin-left:10px;}
+  .toast{position:fixed; left:50%; bottom:26px; transform:translateX(-50%); background:#262b31; color:#fff; padding:12px 22px; border-radius:10px; font-size:14px; font-weight:600; display:none; z-index:50; max-width:90vw; text-align:center;}
+  .toast.show{display:block;}
+  details.help{background:var(--card); border:1px solid var(--line); border-radius:10px; margin-bottom:12px; padding:0;}
+  details.help summary{cursor:pointer; padding:14px 18px; font-weight:700; font-size:14.5px; min-height:48px;}
+  details.help .body{padding:0 18px 16px; color:var(--ink2); font-size:13.5px; line-height:1.55;}
+  details.help .body p{margin-bottom:8px;}
+  .pricecards{display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:16px; margin-bottom:22px;}
+  .pricecard{background:var(--card); border:1px solid var(--line); border-radius:10px; padding:20px;}
+  .pricecard .amt{font-size:26px; font-weight:800; margin:6px 0;}
+  .pricecard ul{margin:8px 0 0 18px; color:var(--ink2); font-size:13.5px; line-height:1.6;}
+  .checkline{display:flex; gap:10px; align-items:flex-start; font-size:13.5px; color:var(--ink2); margin:14px 0;}
+  .checkline input{width:22px; height:22px; margin-top:1px; flex:0 0 auto;}
+  footer{max-width:1180px; margin:0 auto; padding:0 20px 34px; color:var(--mut); font-size:12.5px;}
+  footer b{color:var(--ink2);}
+  #printArea{display:none;}
+  .doc{font-family:Georgia,"Times New Roman",serif; color:#111; font-size:13px; line-height:1.5;}
+  .doc h1{font-size:19px; margin-bottom:2px;}
+  .doc h2{font-size:15px; margin:16px 0 6px; border-bottom:1px solid #999; padding-bottom:3px;}
+  .doc table{border-collapse:collapse; width:100%; margin:6px 0 10px;}
+  .doc table td, .doc table th{border:1px solid #bbb; padding:5px 8px; font-size:12.5px; text-align:left; vertical-align:top;}
+  .doc table td.k{width:34%; background:#f2f2f2; font-family:-apple-system,"Segoe UI",Roboto,sans-serif; font-size:12px;}
+  .doc .sig{margin-top:26px; display:flex; gap:40px;}
+  .doc .sig div{flex:1; border-top:1px solid #111; padding-top:4px; font-size:12px;}
+  .doc .demoline{border:1.5px solid #111; padding:8px 12px; font-family:-apple-system,"Segoe UI",Roboto,sans-serif; font-size:12px; font-weight:700; text-align:center; margin-bottom:14px;}
+  .doc .missingbox{border:1px solid #999; background:#f6f6f6; padding:8px 12px; font-family:-apple-system,"Segoe UI",Roboto,sans-serif; font-size:12px; margin:10px 0;}
+  .doc .pagebreak{page-break-before:always;}
+  @media print{
+    body{background:#fff;}
+    header, .companybar, nav, main, footer, .toast{display:none !important;}
+    #printArea{display:block !important; padding:10px;}
+  }
+  @media (max-width:640px){
+    header, .companybar{padding-left:16px; padding-right:16px;}
+    main{padding:16px 12px 32px;}
+    nav{padding:0 8px;}
+    nav button{padding:12px 9px; font-size:13.5px;}
+  }
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <div class="logo">Final<span>Packet</span></div>
+    <div class="sub">Case paperwork packet for funeral homes &amp; crematories</div>
+  </div>
+  <div class="demo-badge">Demo</div>
+</header>
+<div class="companybar">
+  <span><b id="cbFirm">Heritage Funeral Home</b> · Grove, Oklahoma</span>
+  <span>Sample data — <b>every person named in this demo is fictional</b></span>
+  <span>FinalPacket prepares paperwork. <b>You review, sign, and file.</b></span>
+</div>
+<nav id="mainNav">
+  <button data-view="cases" class="active">Cases</button>
+  <button data-view="form">Case file</button>
+  <button data-view="packet">Packet</button>
+  <button data-view="familylink">Family form</button>
+  <button data-view="custody">Custody log</button>
+  <button data-view="filings">Filings</button>
+  <button data-view="pricing">Pricing &amp; pilot</button>
+  <button data-view="help">Help</button>
+  <button data-view="settings">Settings</button>
+</nav>
+<main>
+<div id="recoverBanner" class="riskbanner" style="display:none"></div>
+
+<!-- ===================== CASES ===================== -->
+<section class="panel active" id="view-cases">
+  <h2>Cases</h2>
+  <p class="pdesc">Each case is entered once. The packet, the worksheets, and the filing clocks are all drawn from that one record.</p>
+  <div class="cards" id="dashCards"></div>
+  <div id="dashBanner"></div>
+  <div style="margin-bottom:16px"><button class="btn primary" id="newCaseBtn">New case</button></div>
+  <div class="tblwrap">
+    <table class="tbl">
+      <thead><tr><th>Case</th><th>Decedent</th><th>Date of death</th><th>Disposition</th><th>Packet</th><th>Status</th><th></th></tr></thead>
+      <tbody id="caseRows"></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ===================== CASE FILE ===================== -->
+<section class="panel" id="view-form">
+  <h2 id="formTitle">Case file</h2>
+  <p class="pdesc">Fields marked <span style="color:var(--red);font-weight:700">*</span> are the facts the packet cannot be completed without. Cause of death is never entered here — the medical certifier completes that portion in the state's system.</p>
+  <input type="hidden" id="f_id">
+  <div class="formcard">
+    <h3 style="margin-top:0">First call</h3>
+    <div class="grid3">
+      <div class="fld"><label for="f_firstCallDate">Date of first call</label><input type="date" id="f_firstCallDate"></div>
+      <div class="fld"><label for="f_firstCallTime">Time of first call</label><div class="inwrap"><input type="text" id="f_firstCallTime" placeholder="e.g. 9:40 p.m."><button type="button" class="mic" data-for="f_firstCallTime" aria-label="Dictate time of first call">🎤</button></div></div>
+      <div class="fld"><label for="f_takenBy">Call taken by</label><div class="inwrap"><input type="text" id="f_takenBy"><button type="button" class="mic" data-for="f_takenBy" aria-label="Dictate call taken by">🎤</button></div></div>
+    </div>
+  </div>
+  <div class="formcard">
+    <h3 style="margin-top:0">The decedent</h3>
+    <div class="grid3">
+      <div class="fld"><label for="f_decLast">Last name <span class="req">*</span></label><div class="inwrap"><input type="text" id="f_decLast"><button type="button" class="mic" data-for="f_decLast" aria-label="Dictate last name">🎤</button></div></div>
+      <div class="fld"><label for="f_decFirst">First name <span class="req">*</span></label><div class="inwrap"><input type="text" id="f_decFirst"><button type="button" class="mic" data-for="f_decFirst" aria-label="Dictate first name">🎤</button></div></div>
+      <div class="fld"><label for="f_decMiddle">Middle name</label><div class="inwrap"><input type="text" id="f_decMiddle"><button type="button" class="mic" data-for="f_decMiddle" aria-label="Dictate middle name">🎤</button></div></div>
+      <div class="fld"><label for="f_decSuffix">Suffix (Jr., Sr., III)</label><div class="inwrap"><input type="text" id="f_decSuffix"><button type="button" class="mic" data-for="f_decSuffix" aria-label="Dictate suffix">🎤</button></div></div>
+      <div class="fld"><label for="f_decSSN">Social Security number <span class="req">*</span></label><div class="inwrap"><input type="text" id="f_decSSN" inputmode="numeric" placeholder="000-00-0000"><button type="button" class="mic" data-for="f_decSSN" aria-label="Dictate Social Security number">🎤</button></div></div>
+      <div class="fld"><label for="f_decDOB">Date of birth <span class="req">*</span></label><input type="date" id="f_decDOB"></div>
+      <div class="fld"><label for="f_decDOD">Date of death <span class="req">*</span></label><input type="date" id="f_decDOD"></div>
+      <div class="fld"><label for="f_decDeathTime">Time of death</label><div class="inwrap"><input type="text" id="f_decDeathTime" placeholder="e.g. 6:12 a.m."><button type="button" class="mic" data-for="f_decDeathTime" aria-label="Dictate time of death">🎤</button></div></div>
+      <div class="fld"><label for="f_decDeathPlace">Place of death (facility or address) <span class="req">*</span></label><div class="inwrap"><input type="text" id="f_decDeathPlace"><button type="button" class="mic" data-for="f_decDeathPlace" aria-label="Dictate place of death">🎤</button></div></div>
+      <div class="fld"><label for="f_decDeathCity">City of death <span class="req">*</span></label><div class="inwrap"><input type="text" id="f_decDeathCity"><button type="button" class="mic" data-for="f_decDeathCity" aria-label="Dictate city of death">🎤</button></div></div>
+      <div class="fld"><label for="f_decDeathCounty">County of death <span class="req">*</span></label><div class="inwrap"><input type="text" id="f_decDeathCounty"><button type="button" class="mic" data-for="f_decDeathCounty" aria-label="Dictate county of death">🎤</button></div></div>
+      <div class="fld"><label for="f_decDeathState">State of death</label><div class="inwrap"><input type="text" id="f_decDeathState"><button type="button" class="mic" data-for="f_decDeathState" aria-label="Dictate state of death">🎤</button></div></div>
+    </div>
+    <h3>Residence</h3>
+    <div class="grid3">
+      <div class="fld"><label for="f_decAddress">Street address <span class="req">*</span></label><div class="inwrap"><input type="text" id="f_decAddress"><button type="button" class="mic" data-for="f_decAddress" aria-label="Dictate street address">🎤</button></div></div>
+      <div class="fld"><label for="f_decCity">City <span class="req">*</span></label><div class="inwrap"><input type="text" id="f_decCity"><button type="button" class="mic" data-for="f_decCity" aria-label="Dictate city">🎤</button></div></div>
+      <div class="fld"><label for="f_decState">State</label><div class="inwrap"><input type="text" id="f_decState"><button type="button" class="mic" data-for="f_decState" aria-label="Dictate state">🎤</button></div></div>
+      <div class="fld"><label for="f_decZip">ZIP</label><div class="inwrap"><input type="text" id="f_decZip" inputmode="numeric"><button type="button" class="mic" data-for="f_decZip" aria-label="Dictate ZIP">🎤</button></div></div>
+      <div class="fld"><label for="f_decCounty">County of residence <span class="req">*</span></label><div class="inwrap"><input type="text" id="f_decCounty"><button type="button" class="mic" data-for="f_decCounty" aria-label="Dictate county of residence">🎤</button></div></div>
+    </div>
+    <h3>Family and background</h3>
+    <div class="grid3">
+      <div class="fld"><label for="f_decMarital">Marital status <span class="req">*</span></label><select id="f_decMarital"><option value="">—</option><option>Married</option><option>Widowed</option><option>Divorced</option><option>Never married</option><option>Unknown</option></select></div>
+      <div class="fld"><label for="f_decSpouse">Surviving spouse (if married or widowed)</label><div class="inwrap"><input type="text" id="f_decSpouse"><button type="button" class="mic" data-for="f_decSpouse" aria-label="Dictate surviving spouse">🎤</button></div></div>
+      <div class="fld"><label for="f_decSpouseAddress">Spouse's address (for SSA-721)</label><div class="inwrap"><input type="text" id="f_decSpouseAddress"><button type="button" class="mic" data-for="f_decSpouseAddress" aria-label="Dictate spouse address">🎤</button></div></div>
+      <div class="fld"><label for="f_decFatherName">Father's name <span class="req">*</span></label><div class="inwrap"><input type="text" id="f_decFatherName"><button type="button" class="mic" data-for="f_decFatherName" aria-label="Dictate father name">🎤</button></div></div>
+      <div class="fld"><label for="f_decMotherMaiden">Mother's maiden name <span class="req">*</span></label><div class="inwrap"><input type="text" id="f_decMotherMaiden"><button type="button" class="mic" data-for="f_decMotherMaiden" aria-label="Dictate mother maiden name">🎤</button></div></div>
+      <div class="fld"><label for="f_decOccupation">Usual occupation <span class="req">*</span></label><div class="inwrap"><input type="text" id="f_decOccupation"><button type="button" class="mic" data-for="f_decOccupation" aria-label="Dictate occupation">🎤</button></div></div>
+      <div class="fld"><label for="f_decIndustry">Kind of business or industry</label><div class="inwrap"><input type="text" id="f_decIndustry"><button type="button" class="mic" data-for="f_decIndustry" aria-label="Dictate industry">🎤</button></div></div>
+      <div class="fld"><label for="f_decEducation">Education</label><div class="inwrap"><input type="text" id="f_decEducation" placeholder="e.g. High school graduate"><button type="button" class="mic" data-for="f_decEducation" aria-label="Dictate education">🎤</button></div></div>
+    </div>
+    <h3>Military service</h3>
+    <div class="grid3">
+      <div class="fld"><label for="f_decVeteran">Was the decedent a veteran? <span class="req">*</span></label><select id="f_decVeteran"><option value="">—</option><option value="yes">Yes</option><option value="no">No</option></select></div>
+      <div class="fld"><label for="f_decServiceBranch">Branch of service</label><div class="inwrap"><input type="text" id="f_decServiceBranch" placeholder="e.g. U.S. Army"><button type="button" class="mic" data-for="f_decServiceBranch" aria-label="Dictate branch of service">🎤</button></div></div>
+      <div class="fld"><label for="f_decServiceDates">Service dates</label><div class="inwrap"><input type="text" id="f_decServiceDates" placeholder="e.g. 1968–1971"><button type="button" class="mic" data-for="f_decServiceDates" aria-label="Dictate service dates">🎤</button></div></div>
+      <div class="fld"><label for="f_decDD214">DD Form 214 on file?</label><select id="f_decDD214"><option value="">—</option><option value="yes">Yes</option><option value="no">No</option></select></div>
+    </div>
+  </div>
+
+  <div class="formcard">
+    <h3 style="margin-top:0">Disposition and service</h3>
+    <div class="grid3">
+      <div class="fld"><label for="f_dispType">Disposition <span class="req">*</span></label><select id="f_dispType"><option value="">—</option><option value="burial">Burial</option><option value="cremation">Cremation</option><option value="other">Other</option></select></div>
+      <div class="fld"><label for="f_dispPlace">Cemetery or crematory <span class="req">*</span></label><div class="inwrap"><input type="text" id="f_dispPlace"><button type="button" class="mic" data-for="f_dispPlace" aria-label="Dictate cemetery or crematory">🎤</button></div></div>
+      <div class="fld"><label for="f_dispCity">Disposition city</label><div class="inwrap"><input type="text" id="f_dispCity"><button type="button" class="mic" data-for="f_dispCity" aria-label="Dictate disposition city">🎤</button></div></div>
+      <div class="fld"><label for="f_dispDate">Disposition date</label><input type="date" id="f_dispDate"></div>
+      <div class="fld"><label for="f_svcType">Service type</label><select id="f_svcType"><option value="">—</option><option value="funeral">Funeral service</option><option value="memorial">Memorial service</option><option value="graveside">Graveside service</option><option value="cremation-service">Cremation with service</option><option value="direct">Direct disposition, no service</option><option value="other">Other</option></select></div>
+      <div class="fld"><label for="f_svcDate">Service date</label><input type="date" id="f_svcDate"></div>
+      <div class="fld"><label for="f_svcTime">Service time</label><div class="inwrap"><input type="text" id="f_svcTime" placeholder="e.g. 2:00 p.m."><button type="button" class="mic" data-for="f_svcTime" aria-label="Dictate service time">🎤</button></div></div>
+      <div class="fld"><label for="f_svcPlace">Service place</label><div class="inwrap"><input type="text" id="f_svcPlace"><button type="button" class="mic" data-for="f_svcPlace" aria-label="Dictate service place">🎤</button></div></div>
+      <div class="fld"><label for="f_svcClergy">Officiant</label><div class="inwrap"><input type="text" id="f_svcClergy"><button type="button" class="mic" data-for="f_svcClergy" aria-label="Dictate officiant">🎤</button></div></div>
+    </div>
+    <div class="fld" style="margin-top:14px"><label for="f_obitNotes">Obituary notes</label><div class="inwrap"><textarea id="f_obitNotes" placeholder="Survivors, memberships, and other notes for the obituary."></textarea><button type="button" class="mic" data-for="f_obitNotes" aria-label="Dictate obituary notes">🎤</button></div></div>
+  </div>
+  <div class="formcard">
+    <h3 style="margin-top:0">Informant</h3>
+    <p class="pdesc" style="margin-bottom:12px">The person who provided the personal facts above. No telephone numbers are collected in this demo.</p>
+    <div class="grid3">
+      <div class="fld"><label for="f_infName">Informant name <span class="req">*</span></label><div class="inwrap"><input type="text" id="f_infName"><button type="button" class="mic" data-for="f_infName" aria-label="Dictate informant name">🎤</button></div></div>
+      <div class="fld"><label for="f_infRelation">Relationship <span class="req">*</span></label><div class="inwrap"><input type="text" id="f_infRelation" placeholder="e.g. Daughter"><button type="button" class="mic" data-for="f_infRelation" aria-label="Dictate informant relationship">🎤</button></div></div>
+      <div class="fld"><label for="f_infEmail">Informant email</label><div class="inwrap"><input type="text" id="f_infEmail"><button type="button" class="mic" data-for="f_infEmail" aria-label="Dictate informant email">🎤</button></div></div>
+      <div class="fld"><label for="f_infAddress">Informant street address <span class="req">*</span></label><div class="inwrap"><input type="text" id="f_infAddress"><button type="button" class="mic" data-for="f_infAddress" aria-label="Dictate informant address">🎤</button></div></div>
+      <div class="fld"><label for="f_infCity">Informant city <span class="req">*</span></label><div class="inwrap"><input type="text" id="f_infCity"><button type="button" class="mic" data-for="f_infCity" aria-label="Dictate informant city">🎤</button></div></div>
+      <div class="fld"><label for="f_infState">Informant state</label><div class="inwrap"><input type="text" id="f_infState"><button type="button" class="mic" data-for="f_infState" aria-label="Dictate informant state">🎤</button></div></div>
+      <div class="fld"><label for="f_infZip">Informant ZIP <span class="req">*</span></label><div class="inwrap"><input type="text" id="f_infZip" inputmode="numeric"><button type="button" class="mic" data-for="f_infZip" aria-label="Dictate informant ZIP">🎤</button></div></div>
+    </div>
+  </div>
+  <div class="formcard">
+    <h3 style="margin-top:0">Next of kin — authorizing person</h3>
+    <div class="grid3">
+      <div class="fld"><label for="f_nokName">Name <span class="req">*</span></label><div class="inwrap"><input type="text" id="f_nokName"><button type="button" class="mic" data-for="f_nokName" aria-label="Dictate next of kin name">🎤</button></div></div>
+      <div class="fld"><label for="f_nokRelation">Relationship <span class="req">*</span></label><div class="inwrap"><input type="text" id="f_nokRelation" placeholder="e.g. Son"><button type="button" class="mic" data-for="f_nokRelation" aria-label="Dictate next of kin relationship">🎤</button></div></div>
+      <div class="fld"><label for="f_nokEmail">Email</label><div class="inwrap"><input type="text" id="f_nokEmail"><button type="button" class="mic" data-for="f_nokEmail" aria-label="Dictate next of kin email">🎤</button></div></div>
+      <div class="fld"><label for="f_nokAddress">Street address</label><div class="inwrap"><input type="text" id="f_nokAddress"><button type="button" class="mic" data-for="f_nokAddress" aria-label="Dictate next of kin address">🎤</button></div></div>
+      <div class="fld"><label for="f_nokCity">City</label><div class="inwrap"><input type="text" id="f_nokCity"><button type="button" class="mic" data-for="f_nokCity" aria-label="Dictate next of kin city">🎤</button></div></div>
+      <div class="fld"><label for="f_nokState">State</label><div class="inwrap"><input type="text" id="f_nokState"><button type="button" class="mic" data-for="f_nokState" aria-label="Dictate next of kin state">🎤</button></div></div>
+      <div class="fld"><label for="f_nokZip">ZIP</label><div class="inwrap"><input type="text" id="f_nokZip" inputmode="numeric"><button type="button" class="mic" data-for="f_nokZip" aria-label="Dictate next of kin ZIP">🎤</button></div></div>
+    </div>
+  </div>
+  <div class="formcard">
+    <h3 style="margin-top:0">Selections and charges</h3>
+    <div class="tblwrap" style="margin-bottom:12px">
+      <table class="tbl" style="min-width:520px">
+        <thead><tr><th>Item</th><th style="width:90px">Qty</th><th style="width:140px">Each ($)</th><th style="width:120px">Line total</th><th style="width:60px"></th></tr></thead>
+        <tbody id="itemsBody"></tbody>
+      </table>
+    </div>
+    <button type="button" class="btn plain" id="addItemBtn">Add an item</button>
+    <div class="grid3" style="margin-top:16px">
+      <div class="fld"><label for="f_certCopies">Certified death certificate copies ordered</label><div class="inwrap"><input type="number" id="f_certCopies" min="0" max="999" step="1"><button type="button" class="mic" data-for="f_certCopies" aria-label="Dictate certified copies">🎤</button></div></div>
+      <div class="fld"><label>Case total</label><div id="caseTotalOut" style="font-size:20px;font-weight:800;padding-top:8px">$0.00</div></div>
+    </div>
+  </div>
+  <div class="formcard">
+    <h3 style="margin-top:0">Filing record</h3>
+    <p class="pdesc" style="margin-bottom:12px">Record what you have done, after you have done it. FinalPacket does not file, submit, or transmit anything.</p>
+    <div class="grid3">
+      <div class="fld"><label for="f_filDcSent">Partial certificate sent to certifier</label><input type="date" id="f_filDcSent"></div>
+      <div class="fld"><label for="f_filDcMed">Medical certification received</label><input type="date" id="f_filDcMed"></div>
+      <div class="fld"><label for="f_filDcFiled">Death certificate filed with the State</label><input type="date" id="f_filDcFiled"></div>
+      <div class="fld"><label for="f_filSsa">SSA-721 sent to Social Security</label><input type="date" id="f_filSsa"></div>
+      <div class="fld"><label for="f_filVa">VA burial claim sent (21P-530EZ)</label><input type="date" id="f_filVa"></div>
+      <div class="fld"><label for="f_status">Case status</label><select id="f_status"><option value="active">Active</option><option value="complete">Complete</option></select></div>
+    </div>
+  </div>
+  <div style="margin-bottom:10px">
+    <button class="btn primary" id="saveCaseBtn">Save case</button>
+    <span class="savedmsg" id="savedMsg" style="display:none"></span>
+    <button class="btn danger" id="deleteCaseBtn" style="display:none; float:right">Delete this case</button>
+  </div>
+</section>
+
+<!-- ===================== PACKET ===================== -->
+<section class="panel" id="view-packet">
+  <h2>The packet</h2>
+  <p class="pdesc">One record, every document. Each document below is a preparation worksheet drawn from the case file. Print the ones that are ready, give them your review, and sign and file them yourself — FinalPacket does not file, submit, or transmit anything.</p>
+  <div class="formcard">
+    <div class="fld" style="max-width:420px"><label for="pktCaseSel">Case</label><select id="pktCaseSel"></select></div>
+    <div id="pktSummary" style="margin-top:14px"></div>
+    <div id="pktMissing"></div>
+  </div>
+  <div id="pktArtifacts"></div>
+  <button class="btn primary" id="printPacketBtn">Print the ready documents</button>
+</section>
+
+<!-- ===================== FAMILY FORM ===================== -->
+<section class="panel" id="view-familylink">
+  <h2>Family information form</h2>
+  <p class="pdesc">In the full service, the family receives a link — no account, no sign-in — and completes this form before they arrive. What they enter fills the case file, so nothing is typed twice. This demo shows the form exactly as the family would see it, filled with the case on record. Nothing is sent from this demo.</p>
+  <div class="formcard">
+    <div class="fld" style="max-width:420px"><label for="linkCaseSel">Case</label><select id="linkCaseSel"></select></div>
+  </div>
+  <div class="formcard" id="linkPreview"></div>
+</section>
+
+<!-- ===================== CUSTODY LOG ===================== -->
+<section class="panel" id="view-custody">
+  <h2>Chain of custody</h2>
+  <p class="pdesc">One log per case, in order, from the moment the decedent comes into your care until the remains are released or placed. Entries are added to the same case record the packet is drawn from.</p>
+  <div class="formcard">
+    <div class="fld" style="max-width:420px"><label for="cusCaseSel">Case</label><select id="cusCaseSel"></select></div>
+    <div id="cusStatus" style="margin-top:12px"></div>
+  </div>
+  <div class="tblwrap">
+    <table class="tbl">
+      <thead><tr><th style="width:170px">Date &amp; time</th><th>Event</th><th>Location</th><th>Recorded by</th><th>Note</th></tr></thead>
+      <tbody id="cusRows"></tbody>
+    </table>
+  </div>
+  <div class="formcard">
+    <h3 style="margin-top:0">Add an entry</h3>
+    <div class="grid3">
+      <div class="fld"><label for="cusEvent">Event</label><select id="cusEvent">
+        <option>Received into our care</option><option>Transferred to crematory</option><option>Cremation completed</option>
+        <option>Remains received back</option><option>Transferred to cemetery</option><option>Released to family</option>
+        <option>Placed in niche or delivered to cemetery</option><option>Note</option>
+      </select></div>
+      <div class="fld"><label for="cusWhen">Date &amp; time</label><input type="datetime-local" id="cusWhen"></div>
+      <div class="fld"><label for="cusLoc">Location</label><div class="inwrap"><input type="text" id="cusLoc"><button type="button" class="mic" data-for="cusLoc" aria-label="Dictate location">🎤</button></div></div>
+      <div class="fld"><label for="cusBy">Recorded by</label><div class="inwrap"><input type="text" id="cusBy"><button type="button" class="mic" data-for="cusBy" aria-label="Dictate recorded by">🎤</button></div></div>
+      <div class="fld"><label for="cusNote">Note</label><div class="inwrap"><input type="text" id="cusNote"><button type="button" class="mic" data-for="cusNote" aria-label="Dictate note">🎤</button></div></div>
+    </div>
+    <div style="margin-top:14px"><button class="btn primary" id="addCustodyBtn">Add entry</button><span class="savedmsg" id="cusSavedMsg" style="display:none"></span></div>
+  </div>
+</section>
+
+<!-- ===================== FILINGS ===================== -->
+<section class="panel" id="view-filings">
+  <h2>Filings</h2>
+  <p class="pdesc">The clocks below are drawn from Oklahoma law as cited on each line. They measure from the dates on the case record. Marking a filing here records what you have already done — it does not file anything.</p>
+  <div id="filBanner"></div>
+  <div class="tblwrap">
+    <table class="tbl" style="min-width:760px">
+      <thead><tr><th>Case</th><th>Death certificate (Oklahoma)</th><th>SSA-721</th><th>VA burial claim</th></tr></thead>
+      <tbody id="filRows"></tbody>
+    </table>
+  </div>
+  <div class="notebox"><b>About these clocks.</b> Oklahoma's death-certificate steps are set by 63 O.S. § 1-317 (2025 text, as amended effective November 1, 2024): the certificate is filed within 10 calendar days of the death; the funeral director transmits the partial certificate to the medical certifier within 24 hours; the certifier completes the medical certification within 5 calendar days of receiving it; and the funeral director reviews, signs, and submits within 4 calendar days of receiving the medical certification. <b>Please note:</b> the State Department of Health's public web page still describes a 3-day filing period from the earlier text of the law. Confirm the period your registrar expects — the clocks here follow the current statute text. <b>VERIFY against the current statute and your registrar before relying on any date shown.</b></div>
+</section>
+
+<!-- ===================== PRICING & PILOT ===================== -->
+<section class="panel" id="view-pricing">
+  <h2>Pricing</h2>
+  <p class="pdesc">One price, stated plainly. No per-seat charges, no setup fee, no contract.</p>
+  <div class="pricecards">
+    <div class="pricecard"><div class="lbl" style="font-size:12px;text-transform:uppercase;letter-spacing:.7px;color:var(--mut);font-weight:700">Monthly</div><div class="amt">$79<span style="font-size:14px;color:var(--mut)"> / month, flat</span></div>
+      <ul><li>Every case, every document, the custody log and the filing clocks</li><li>Your data stays on your own device</li><li>Cancel any time</li></ul></div>
+    <div class="pricecard"><div class="lbl" style="font-size:12px;text-transform:uppercase;letter-spacing:.7px;color:var(--mut);font-weight:700">Per case</div><div class="amt">$19<span style="font-size:14px;color:var(--mut)"> / case</span></div>
+      <ul><li>The same packet, paid case by case</li><li>Suits a home that would rather not carry a monthly charge</li></ul></div>
+    <div class="pricecard"><div class="lbl" style="font-size:12px;text-transform:uppercase;letter-spacing:.7px;color:var(--mut);font-weight:700">Pilot</div><div class="amt">$99<span style="font-size:14px;color:var(--mut)"> / first 10 cases</span></div>
+      <ul><li>We set the packet up with your firm's details and prepare the first 10 cases alongside you</li><li>You review, sign, and file everything, as always</li><li>If it does not save your office time, do not continue</li></ul></div>
+  </div>
+  <div class="formcard">
+    <h3 style="margin-top:0">Ask about the pilot</h3>
+    <div class="grid3">
+      <div class="fld"><label for="pilotFirm">Funeral home</label><div class="inwrap"><input type="text" id="pilotFirm"><button type="button" class="mic" data-for="pilotFirm" aria-label="Dictate funeral home">🎤</button></div></div>
+      <div class="fld"><label for="pilotName">Your name</label><div class="inwrap"><input type="text" id="pilotName"><button type="button" class="mic" data-for="pilotName" aria-label="Dictate your name">🎤</button></div></div>
+      <div class="fld"><label for="pilotEmail">Your email</label><div class="inwrap"><input type="text" id="pilotEmail"><button type="button" class="mic" data-for="pilotEmail" aria-label="Dictate your email">🎤</button></div></div>
+      <div class="fld"><label for="pilotCases">Cases per year</label><select id="pilotCases"><option value="">—</option><option>Under 50</option><option>50–150</option><option>150–300</option><option>Over 300</option></select></div>
+    </div>
+    <label class="checkline"><input type="checkbox" id="pilotAgree"><span>I understand FinalPacket prepares paperwork only. My firm reviews, signs, and files every document, and nothing is submitted to any agency by FinalPacket.</span></label>
+    <button class="btn primary" id="pilotBtn" disabled>Send the pilot request</button>
+    <p style="font-size:12.5px;color:var(--mut);margin-top:10px">This opens your own email program, addressed to us, with the request written out. Nothing is sent until you press send there.</p>
+  </div>
+</section>
+
+<!-- ===================== HELP ===================== -->
+<section class="panel" id="view-help">
+  <h2>Help</h2>
+  <p class="pdesc">Plain answers to the things this program does.</p>
+  <details class="help"><summary>Starting a case</summary><div class="body">
+    <p>Choose <b>New case</b> on the Cases screen and fill in the case file. The fields marked * are the facts the packet cannot be completed without. Save the case — you will see the saved total on screen. You can come back and add facts at any time; every document is drawn from the same record.</p></div></details>
+  <details class="help"><summary>Printing the packet</summary><div class="body">
+    <p>Open the <b>Packet</b> screen and choose the case. Each document shows whether it is ready and names any fact still missing. <b>Print the ready documents</b> prints the complete ones together. A document with missing facts can be printed on its own, and it will say plainly what is missing.</p></div></details>
+  <details class="help"><summary>The family information form</summary><div class="body">
+    <p>The <b>Family form</b> screen shows the form the family completes in the full service — one entry of the facts, before they arrive, with no account for them to create. What they enter fills the case file directly.</p></div></details>
+  <details class="help"><summary>The custody log</summary><div class="body">
+    <p>Choose the case on the <b>Custody log</b> screen and add an entry each time the decedent is received, transferred, or released. The log is kept in the order entries are recorded and is printed with the packet.</p></div></details>
+  <details class="help"><summary>The filing clocks</summary><div class="body">
+    <p>The <b>Filings</b> screen shows where each filing stands and the date each step is due, with the law each date comes from. When you have filed or sent something yourself, record the date on the case file — or use the button on the Filings screen — so the clocks stay true.</p></div></details>
+  <details class="help"><summary>What FinalPacket does not do</summary><div class="body">
+    <p>FinalPacket <b>prepares</b> worksheets and forms. It does not file a death certificate, does not connect to the state's electronic death registration system, and does not submit anything to Social Security, the VA, or any other agency. You review, sign, and file every document. The documents it prints are preparation worksheets, labeled as demo renderings in this demonstration — not official forms.</p></div></details>
+  <details class="help"><summary>Where your data lives</summary><div class="body">
+    <p>Your data lives on this device, in this browser, and nowhere else. Nothing is uploaded. Back it up from the Settings screen — export a copy and keep it somewhere safe, because clearing the browser's data will clear these records.</p></div></details>
+  <div class="notebox"><b>Rules this demo follows, and where they came from.</b>
+    <br>· Death certificate clocks: 63 O.S. § 1-317 (2025 text) — filed within 10 calendar days of death; partial certificate to the certifier within 24 hours; medical certification within 5 calendar days of the certifier receiving it; director's review, signature, and submission within 4 calendar days of receiving the medical certification. The State Department of Health's public page still describes the earlier 3-day period — <b>VERIFY</b> with your registrar.
+    <br>· SSA-721: Form SSA-721 (10-2024), "Statement of Death by Funeral Director," OMB No. 0960-0142. Social Security advises the form need not be sent when the death is reported through Electronic Death Registration, and that pages 2–3 of the official form are given to survivors.
+    <br>· VA burial claim: VA Form 21P-530EZ (Oct 2024), "Application for Burial Benefits (Under 38 U.S.C. Chapter 23)." A claim for the non-service-connected burial allowance must reach VA within 2 years of the burial or cremation. Benefit amounts are <b>not</b> shown in this program — they change, and the current figures should be checked on VA's published table. <b>VERIFY.</b>
+    <br>· Cremation authorization wording and any waiting period: not stated here, because they depend on current Oklahoma law and your crematory's requirements. <b>VERIFY</b> before relying on the worksheet.
+    <br>· Contract: your firm's agreement must satisfy the FTC Funeral Rule and state law. The packet's statement of selections is a worksheet, not that contract. <b>VERIFY.</b></div>
+  <div class="formcard">
+    <h3 style="margin-top:0">Questions</h3>
+    <p style="color:var(--ink2);font-size:13.5px;margin-bottom:12px">Write to us from your own email program. Nothing is sent until you press send there.</p>
+    <a class="btn" id="emailUsBtn" href="mailto:whitewolfbackoffice@gmail.com?subject=FinalPacket%20help%20%E2%80%94%20v0.1.0-demo&amp;body=Tell%20us%20what%20you%20were%20trying%20to%20do%20and%20what%20happened%3A%0A%0A">Email us</a>
+  </div>
+</section>
+
+<!-- ===================== SETTINGS ===================== -->
+<section class="panel" id="view-settings">
+  <h2>Settings</h2>
+  <p class="pdesc">Your firm's details, printed on every document. Changing them here changes them everywhere the record is shown.</p>
+  <div class="formcard">
+    <div class="grid3">
+      <div class="fld"><label for="s_firmName">Funeral home name</label><div class="inwrap"><input type="text" id="s_firmName"><button type="button" class="mic" data-for="s_firmName" aria-label="Dictate firm name">🎤</button></div></div>
+      <div class="fld"><label for="s_firmAddress">Street address</label><div class="inwrap"><input type="text" id="s_firmAddress"><button type="button" class="mic" data-for="s_firmAddress" aria-label="Dictate firm address">🎤</button></div></div>
+      <div class="fld"><label for="s_firmCity">City</label><div class="inwrap"><input type="text" id="s_firmCity"><button type="button" class="mic" data-for="s_firmCity" aria-label="Dictate firm city">🎤</button></div></div>
+      <div class="fld"><label for="s_firmState">State</label><div class="inwrap"><input type="text" id="s_firmState"><button type="button" class="mic" data-for="s_firmState" aria-label="Dictate firm state">🎤</button></div></div>
+      <div class="fld"><label for="s_firmZip">ZIP</label><div class="inwrap"><input type="text" id="s_firmZip" inputmode="numeric"><button type="button" class="mic" data-for="s_firmZip" aria-label="Dictate firm ZIP">🎤</button></div></div>
+      <div class="fld"><label for="s_director">Funeral director in charge</label><div class="inwrap"><input type="text" id="s_director"><button type="button" class="mic" data-for="s_director" aria-label="Dictate director name">🎤</button></div></div>
+      <div class="fld"><label for="s_copyFee">Charge per certified copy ($)</label><div class="inwrap"><input type="text" id="s_copyFee" inputmode="decimal"><button type="button" class="mic" data-for="s_copyFee" aria-label="Dictate copy charge">🎤</button></div></div>
+    </div>
+    <div style="margin-top:16px"><button class="btn primary" id="saveSettingsBtn">Save settings</button><span class="savedmsg" id="settingsSaved" style="display:none"></span></div>
+  </div>
+  <div class="formcard">
+    <h3 style="margin-top:0">Your records</h3>
+    <p style="color:var(--ink2);font-size:13.5px;margin-bottom:12px">Export a backup of every case on this device, or restore one. Restoring replaces what is here now.</p>
+    <button class="btn plain" id="exportBtn">Export backup</button>
+    <label class="btn plain" for="importFile" style="margin-left:8px">Import backup</label>
+    <input type="file" id="importFile" accept=".json,application/json" style="display:none">
+    <div style="margin-top:18px"><button class="btn danger" id="resetBtn">Reset the demo to its sample cases</button></div>
+  </div>
+</section>
+</main>
+<footer><b>FinalPacket v0.1.0-demo</b> · White Wolf Apps · Demonstration software with fictional sample data. Your data lives on this device only — export a backup from Settings regularly. FinalPacket prepares paperwork; it does not file, submit, or transmit anything.</footer>
+<div id="printArea"></div>
+<div class="toast" id="toast"></div>
+
+<script>
+"use strict";
+var VERSION = "0.1.0-demo";
+var LS_KEY = "finalpacket_demo_v1";
+var state = null;
+var editingId = null;
+var guardMap = {};
+
+/* ---------------- helpers ---------------- */
+function $(id){ return document.getElementById(id); }
+function isPlainObject(x){ return !!x && typeof x === "object" && !Array.isArray(x); }
+function asStr(x){ return (x === null || x === undefined) ? "" : String(x); }
+function trimStr(x){ return asStr(x).trim(); }
+function asIntIn(x, lo, hi, dflt){ var n = parseInt(x, 10); if(isNaN(n)) return dflt; if(n < lo) return lo; if(n > hi) return hi; return n; }
+function asNonNegCents(x){ var n = Number(x); if(!isFinite(n) || n < 0) return 0; if(n > 999999999) return 999999999; return Math.round(n); }
+function isValidDateString(s){ if(typeof s !== "string") return false; var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(s); if(!m) return false; var y=+m[1], mo=+m[2], d=+m[3]; if(mo<1||mo>12||d<1||d>31) return false; var dt = new Date(Date.UTC(y, mo-1, d)); return dt.getUTCFullYear()===y && dt.getUTCMonth()===mo-1 && dt.getUTCDate()===d; }
+function asDateOrEmpty(x){ var s = asStr(x); return isValidDateString(s) ? s : ""; }
+function isValidDateTimeString(s){ if(typeof s !== "string") return false; var m = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})$/.exec(s); if(!m) return false; if(!isValidDateString(s.slice(0,10))) return false; var h=+m[4], mi=+m[5]; return h>=0 && h<=23 && mi>=0 && mi<=59; }
+function esc(s){ return asStr(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+function money(cents){ var n = (Number(cents)||0)/100; return "$" + n.toLocaleString("en-US",{minimumFractionDigits:2, maximumFractionDigits:2}); }
+function parseMoneyToCents(s){ var t = asStr(s).replace(/[^0-9.\-]/g,""); if(!t) return null; var n = parseFloat(t); if(!isFinite(n) || n < 0) return null; return Math.round(n*100); }
+function uid(){ return "c" + Date.now().toString(36) + Math.random().toString(36).slice(2,8); }
+function addDays(dateStr, n){ if(!isValidDateString(dateStr)) return ""; var p = dateStr.split("-"); var dt = new Date(Date.UTC(+p[0], +p[1]-1, +p[2] + n)); function z(v){ return (v<10?"0":"")+v; } return dt.getUTCFullYear() + "-" + z(dt.getUTCMonth()+1) + "-" + z(dt.getUTCDate()); }
+function addYears(dateStr, n){ if(!isValidDateString(dateStr)) return ""; var p = dateStr.split("-"); var y = +p[0]+n, mo=+p[1], d=+p[2]; var maxDay = new Date(Date.UTC(y, mo, 0)).getUTCDate(); if(d > maxDay) d = maxDay; /* Feb 29 anniversaries land on Feb 28 in non-leap years — the earlier, safer reading for a filing deadline */ function z(v){ return (v<10?"0":"")+v; } return y + "-" + z(mo) + "-" + z(d); }
+function todayStr(){ var d = new Date(); function z(v){ return (v<10?"0":"")+v; } return d.getFullYear() + "-" + z(d.getMonth()+1) + "-" + z(d.getDate()); }
+function nowLocalInput(){ var d = new Date(); function z(v){ return (v<10?"0":"")+v; } return d.getFullYear()+"-"+z(d.getMonth()+1)+"-"+z(d.getDate())+"T"+z(d.getHours())+":"+z(d.getMinutes()); }
+function fmtDate(s){ if(!isValidDateString(s)) return "—"; var p = s.split("-"); var months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]; return months[+p[1]-1] + " " + (+p[2]) + ", " + p[0]; }
+function fmtDateTime(s){ if(!isValidDateTimeString(s)) return "—"; return fmtDate(s.slice(0,10)) + ", " + s.slice(11); }
+function fullName(c){ var n = [c.decFirst, c.decMiddle, c.decLast].map(trimStr).filter(Boolean).join(" "); if(trimStr(c.decSuffix)) n += ", " + trimStr(c.decSuffix); return n || "(unnamed)"; }
+function contentHash(str){ var h = 0; for(var i=0;i<str.length;i++){ h = ((h<<5) - h + str.charCodeAt(i)) | 0; } return String(h); }
+function guardOnce(key, payload){ var h = contentHash(key + "|" + payload); var now = Date.now(); if(guardMap[key] && guardMap[key].h === h && (now - guardMap[key].t) < 5000){ return false; } guardMap[key] = {h:h, t:now}; return true; }
+function toast(msg){ var t = $("toast"); t.textContent = msg; t.className = "toast show"; setTimeout(function(){ t.className = "toast"; }, 3600); }
+
+/* ---------------- case shape ---------------- */
+var STR_FIELDS = ["caseNo","firstCallDate","firstCallTime","takenBy","decLast","decFirst","decMiddle","decSuffix","decSSN","decDeathTime","decDeathPlace","decDeathCity","decDeathCounty","decDeathState","decAddress","decCity","decState","decZip","decCounty","decMarital","decSpouse","decSpouseAddress","decOccupation","decIndustry","decEducation","decFatherName","decMotherMaiden","decServiceBranch","decServiceDates","dispPlace","dispCity","svcTime","svcPlace","svcClergy","obitNotes","infName","infRelation","infAddress","infCity","infState","infZip","infEmail","nokName","nokRelation","nokAddress","nokCity","nokState","nokZip","nokEmail"];
+var DATE_FIELDS = ["decDOB","decDOD","dispDate","svcDate"];
+var CUSTODY_EVENTS = ["Received into our care","Transferred to crematory","Cremation completed","Remains received back","Transferred to cemetery","Released to family","Placed in niche or delivered to cemetery","Note"];
+var CUSTODY_CLOSED = ["Released to family","Placed in niche or delivered to cemetery"];
+
+function blankCase(){
+  var c = { id: uid(), status: "active", certCopies: 0, items: [], custody: [],
+    filings: { dcSentCert: "", dcMedCert: "", dcFiled: "", ssaSent: "", vaSent: "" },
+    dispType: "", svcType: "", decVeteran: "", decDD214: "", decDeathState: "OK", decState: "OK", infState: "OK", createdAt: "", updatedAt: "" };
+  STR_FIELDS.forEach(function(f){ c[f] = ""; });
+  DATE_FIELDS.forEach(function(f){ c[f] = ""; });
+  c.decDeathState = "OK"; c.decState = "OK"; c.infState = "OK";
+  return c;
+}
+function sanitizeItem(x){ if(!isPlainObject(x)) return null; var d = trimStr(x.desc); if(!d) return null; return { desc: d, qty: asIntIn(x.qty, 1, 9999, 1), unit: asNonNegCents(x.unit) }; }
+function sanitizeCustody(x){ if(!Array.isArray(x)) return []; var out = []; x.forEach(function(e){ if(!isPlainObject(e)) return; if(!isValidDateTimeString(asStr(e.ts))) return; var ev = CUSTODY_EVENTS.indexOf(asStr(e.event)) >= 0 ? asStr(e.event) : "Note"; out.push({ ts: asStr(e.ts), event: ev, location: asStr(e.location), by: asStr(e.by), note: asStr(e.note) }); }); return out; }
+function sanitizeFilings(x){ var f = { dcSentCert: "", dcMedCert: "", dcFiled: "", ssaSent: "", vaSent: "" }; if(!isPlainObject(x)) return f; Object.keys(f).forEach(function(k){ f[k] = asDateOrEmpty(x[k]); }); return f; }
+function sanitizeCase(x){
+  if(!isPlainObject(x)) return null;
+  var c = blankCase();
+  c.id = trimStr(x.id) || uid();
+  c.status = x.status === "complete" ? "complete" : "active";
+  STR_FIELDS.forEach(function(f){ c[f] = asStr(x[f]); });
+  DATE_FIELDS.forEach(function(f){ c[f] = asDateOrEmpty(x[f]); });
+  c.firstCallDate = asDateOrEmpty(x.firstCallDate);
+  c.dispType = ["burial","cremation","other"].indexOf(x.dispType) >= 0 ? x.dispType : "";
+  c.svcType = ["funeral","memorial","graveside","cremation-service","direct","other"].indexOf(x.svcType) >= 0 ? x.svcType : "";
+  c.decMarital = ["Married","Widowed","Divorced","Never married","Unknown"].indexOf(x.decMarital) >= 0 ? x.decMarital : "";
+  c.decVeteran = (x.decVeteran === "yes" || x.decVeteran === "no") ? x.decVeteran : "";
+  c.decDD214 = (x.decDD214 === "yes" || x.decDD214 === "no") ? x.decDD214 : "";
+  c.certCopies = asIntIn(x.certCopies, 0, 999, 0);
+  c.items = Array.isArray(x.items) ? x.items.map(sanitizeItem).filter(Boolean) : [];
+  c.custody = sanitizeCustody(x.custody);
+  c.filings = sanitizeFilings(x.filings);
+  c.createdAt = asStr(x.createdAt); c.updatedAt = asStr(x.updatedAt);
+  return c;
+}
+function sanitizeSettings(x){
+  var d = { firmName: "Heritage Funeral Home", firmAddress: "214 East Cherokee Avenue", firmCity: "Grove", firmState: "OK", firmZip: "74344", director: "M. Hartley, Licensed Funeral Director", copyFeeCents: 1200 };
+  if(!isPlainObject(x)) return d;
+  ["firmName","firmAddress","firmCity","firmState","firmZip","director"].forEach(function(k){ var v = trimStr(x[k]); if(v) d[k] = v; });
+  var fee = Number(x.copyFeeCents); if(isFinite(fee) && fee >= 0 && fee <= 100000) d.copyFeeCents = Math.round(fee);
+  return d;
+}
+function sanitizeState(p){
+  var out = { v: 1, seq: 100, settings: sanitizeSettings(p.settings), cases: [] };
+  var seq = parseInt(p.seq, 10); if(isFinite(seq) && seq >= 1 && seq <= 999999) out.seq = seq;
+  if(Array.isArray(p.cases)){ p.cases.forEach(function(x){ var c = sanitizeCase(x); if(c) out.cases.push(c); }); }
+  return out;
+}
+
+/* ---------------- seed (all persons fictional) ---------------- */
+function seed(){
+  var s = { v: 1, seq: 103, settings: sanitizeSettings(null), cases: [] };
+  var c1 = blankCase();
+  c1.id = "seed-case-1"; c1.caseNo = "2026-101"; c1.createdAt = "2026-11-05"; c1.updatedAt = "2026-11-05";
+  c1.firstCallDate = "2026-11-05"; c1.firstCallTime = "7:15 a.m."; c1.takenBy = "M. Hartley";
+  c1.decLast = "Callahan"; c1.decFirst = "Margaret"; c1.decMiddle = "Ellen"; c1.decDOB = "1938-04-12"; c1.decDOD = "2026-11-05";
+  c1.decDeathPlace = "Her own home"; c1.decDeathCity = "Grove"; c1.decDeathCounty = "Delaware"; c1.decDeathState = "OK";
+  c1.decAddress = "12 Lakeshore Drive"; c1.decCity = "Grove"; c1.decState = "OK"; c1.decZip = "74344"; c1.decCounty = "Delaware";
+  c1.decMarital = "Widowed"; c1.decSpouse = "Thomas R. Callahan"; c1.decSpouseAddress = "12 Lakeshore Drive, Grove, OK 74344";
+  c1.decOccupation = "Schoolteacher"; c1.decIndustry = "Public education"; c1.decEducation = "Bachelor's degree";
+  c1.decMotherMaiden = "Evelyn Brooks";
+  c1.decVeteran = "no";
+  c1.dispType = "burial"; c1.dispPlace = "Olympus Cemetery"; c1.dispCity = "Grove"; c1.dispDate = "2026-11-09";
+  c1.svcType = "funeral"; c1.svcDate = "2026-11-09"; c1.svcTime = "11:00 a.m."; c1.svcPlace = "Heritage Funeral Home chapel"; c1.svcClergy = "Rev. Daniel Osei";
+  c1.obitNotes = "Member of the Grove Garden Club for forty years. Survived by her daughter, Carol; two grandchildren; and her sister, June.";
+  c1.infName = "Carol Jennings"; c1.infRelation = "Daughter"; c1.infAddress = "88 South Main Street"; c1.infCity = "Grove"; c1.infState = "OK"; c1.infZip = "74344"; c1.infEmail = "carol.jennings@examplemail.com";
+  c1.nokName = "Carol Jennings"; c1.nokRelation = "Daughter"; c1.nokAddress = "88 South Main Street"; c1.nokCity = "Grove"; c1.nokState = "OK"; c1.nokZip = "74344"; c1.nokEmail = "carol.jennings@examplemail.com";
+  c1.items = [ {desc:"Professional services of the funeral director and staff", qty:1, unit:265000}, {desc:"Casket — oak, satin finish", qty:1, unit:189500}, {desc:"Outer burial container — concrete vault", qty:1, unit:99500} ];
+  c1.certCopies = 8;
+  c1.filings.dcSentCert = "2026-11-06";
+  s.cases.push(c1);
+
+  var c2 = blankCase();
+  c2.id = "seed-case-2"; c2.caseNo = "2026-102"; c2.createdAt = "2026-11-06"; c2.updatedAt = "2026-11-07";
+  c2.firstCallDate = "2026-11-06"; c2.firstCallTime = "9:40 p.m."; c2.takenBy = "J. Alvarez";
+  c2.decLast = "Redbird"; c2.decFirst = "Samuel"; c2.decMiddle = "James"; c2.decSSN = "900-01-4417"; c2.decDOB = "1949-08-23"; c2.decDOD = "2026-11-06";
+  c2.decDeathTime = "8:57 p.m."; c2.decDeathPlace = "St. Anne's Hospice"; c2.decDeathCity = "Grove"; c2.decDeathCounty = "Delaware"; c2.decDeathState = "OK";
+  c2.decAddress = "402 East 21st Street"; c2.decCity = "Jay"; c2.decState = "OK"; c2.decZip = "74346"; c2.decCounty = "Delaware";
+  c2.decMarital = "Married"; c2.decSpouse = "Linda M. Redbird"; c2.decSpouseAddress = "402 East 21st Street, Jay, OK 74346";
+  c2.decOccupation = "Machinist"; c2.decIndustry = "Manufacturing"; c2.decEducation = "High school graduate";
+  c2.decFatherName = "Walter Redbird"; c2.decMotherMaiden = "Rosa Delgado";
+  c2.decVeteran = "yes"; c2.decServiceBranch = "U.S. Army"; c2.decServiceDates = "1968–1971"; c2.decDD214 = "yes";
+  c2.dispType = "cremation"; c2.dispPlace = "Lakeside Crematory"; c2.dispCity = "Grove"; c2.dispDate = "2026-11-10";
+  c2.svcType = "memorial"; c2.svcDate = "2026-11-14"; c2.svcTime = "2:00 p.m."; c2.svcPlace = "Heritage Funeral Home chapel"; c2.svcClergy = "Pastor Ruth Ann Cole";
+  c2.obitNotes = "Served in Vietnam with the 1st Infantry Division. Member of VFW Post 4107. Survived by his wife, Linda; a son, David; and three grandchildren.";
+  c2.infName = "Linda M. Redbird"; c2.infRelation = "Wife"; c2.infAddress = "402 East 21st Street"; c2.infCity = "Jay"; c2.infState = "OK"; c2.infZip = "74346"; c2.infEmail = "linda.redbird@examplemail.com";
+  c2.nokName = "Linda M. Redbird"; c2.nokRelation = "Wife"; c2.nokAddress = "402 East 21st Street"; c2.nokCity = "Jay"; c2.nokState = "OK"; c2.nokZip = "74346"; c2.nokEmail = "linda.redbird@examplemail.com";
+  c2.items = [ {desc:"Professional services of the funeral director and staff", qty:1, unit:240000}, {desc:"Cremation charge", qty:1, unit:89500}, {desc:"Cremation container", qty:1, unit:19500} ];
+  c2.certCopies = 5;
+  c2.custody = [
+    { ts: "2026-11-06T21:40", event: "Received into our care", location: "Heritage Funeral Home", by: "J. Alvarez", note: "Brought from St. Anne's Hospice, Grove." },
+    { ts: "2026-11-07T09:15", event: "Transferred to crematory", location: "Lakeside Crematory, Grove", by: "J. Alvarez", note: "" }
+  ];
+  c2.filings.dcSentCert = "2026-11-06"; c2.filings.dcMedCert = "2026-11-07"; c2.filings.vaSent = "2026-11-07";
+  s.cases.push(c2);
+
+  var c3 = blankCase();
+  c3.id = "seed-case-3"; c3.caseNo = "2026-103"; c3.createdAt = "2026-11-04"; c3.updatedAt = "2026-11-04";
+  c3.firstCallDate = "2026-11-04"; c3.firstCallTime = "3:05 p.m."; c3.takenBy = "M. Hartley";
+  c3.decLast = "Whitfield"; c3.decFirst = "Dorothy"; c3.decDOD = "2026-11-04";
+  c3.decDeathPlace = "Grand Lake Regional Hospital"; c3.decDeathCity = "Grove"; c3.decDeathCounty = "Delaware"; c3.decDeathState = "OK";
+  c3.items = [ {desc:"Transfer of remains and care", qty:1, unit:45000} ];
+  c3.certCopies = 0;
+  s.cases.push(c3);
+  return s;
+}
+
+/* ---------------- load / save with recovery ---------------- */
+function save(s){
+  try{ localStorage.setItem(LS_KEY, JSON.stringify(s || state)); }catch(e){}
+  try{ localStorage.setItem(LS_KEY + "_backup", JSON.stringify(s || state)); }catch(e){}
+}
+function load(){
+  var raw = null;
+  try{ raw = localStorage.getItem(LS_KEY); }catch(e){}
+  if(raw === null || raw === undefined){ state = seed(); save(state); return; }
+  var p = null, okParse = true;
+  try{ p = JSON.parse(raw); }catch(e){ okParse = false; }
+  if(!okParse || !isPlainObject(p) || !Array.isArray(p.cases)){
+    try{ localStorage.setItem(LS_KEY + "_corrupt", raw); }catch(e){}
+    var restored = false;
+    try{
+      var braw = localStorage.getItem(LS_KEY + "_backup");
+      if(braw){ var bp = JSON.parse(braw); if(isPlainObject(bp) && Array.isArray(bp.cases)){ state = sanitizeState(bp); restored = true; } }
+    }catch(e){}
+    if(!restored){ state = seed(); }
+    save(state);
+    var b = $("recoverBanner");
+    b.style.display = "block";
+    b.innerHTML = restored
+      ? "<b>Your records could not be read, so the last good backup was restored.</b> The damaged copy was kept aside, untouched. Nothing else was changed."
+      : "<b>Your records could not be read and no readable backup was found, so the sample cases were loaded.</b> The damaged copy was kept aside, untouched.";
+    return;
+  }
+  state = sanitizeState(p);
+  save(state);
+}
+function findCase(id){ for(var i=0;i<state.cases.length;i++){ if(state.cases[i].id === id) return state.cases[i]; } return null; }
+
+/* ---------------- completeness engine ---------------- */
+var REQ_COMMON = [
+  ["decLast","Decedent's last name"],["decFirst","Decedent's first name"],["infName","Informant's name"],["infRelation","Informant's relationship"],["nokName","Next of kin's name"],["nokRelation","Next of kin's relationship"],["dispPlace","Cemetery or crematory"]
+];
+var REQ_DC = [
+  ["decSSN","Social Security number"],["decDOB","Date of birth"],["decDOD","Date of death"],["decDeathPlace","Place of death"],["decDeathCity","City of death"],["decDeathCounty","County of death"],
+  ["decAddress","Residence street address"],["decCity","Residence city"],["decCounty","County of residence"],["decMarital","Marital status"],["decOccupation","Usual occupation"],
+  ["decFatherName","Father's name"],["decMotherMaiden","Mother's maiden name"],["decVeteran","Veteran status"],
+  ["infAddress","Informant's street address"],["infCity","Informant's city"],["infZip","Informant's ZIP"]
+];
+function fieldPresent(c, f){
+  if(f === "items") return c.items.length > 0;
+  if(f === "dispType") return !!c.dispType;
+  return trimStr(c[f]) !== "";
+}
+function missingFor(c, reqList){ var out = []; reqList.forEach(function(pair){ if(!fieldPresent(c, pair[0])) out.push(pair[1]); }); return out; }
+function artifactsFor(c){
+  var arts = [];
+  var dcReq = REQ_COMMON.concat(REQ_DC);
+  arts.push({ key:"dc", name:"Death certificate worksheet — Oklahoma", avail:true, missing: missingFor(c, dcReq) });
+  var ctReq = REQ_COMMON.concat([["items","At least one selection on the contract"]]);
+  arts.push({ key:"contract", name:"Statement of selections and charges", avail:true, missing: missingFor(c, ctReq) });
+  var ssaReq = [["decLast","Decedent's last name"],["decFirst","Decedent's first name"],["decSSN","Social Security number"],["decDOD","Date of death"],["decDOB","Date of birth"],["decDeathCity","City of death"]];
+  if(trimStr(c.decSpouse)) ssaReq.push(["decSpouseAddress","Spouse's address"]);
+  arts.push({ key:"ssa", name:"SSA-721 — Statement of Death by Funeral Director", avail:true, missing: missingFor(c, ssaReq) });
+  if(c.decVeteran === "yes"){
+    var vaReq = [["decServiceBranch","Branch of service"],["decServiceDates","Service dates"],["decDD214","DD Form 214 on file («yes»)"],["nokName","Claimant (next of kin) name"],["dispDate","Date of burial or cremation"]];
+    var vaMissing = [];
+    vaReq.forEach(function(pair){ if(pair[0] === "decDD214"){ if(c.decDD214 !== "yes") vaMissing.push(pair[1]); } else if(!fieldPresent(c, pair[0])) vaMissing.push(pair[1]); });
+    arts.push({ key:"va", name:"VA Form 21P-530EZ — burial benefits worksheet", avail:true, missing: vaMissing });
+  } else {
+    arts.push({ key:"va", name:"VA Form 21P-530EZ — burial benefits worksheet", avail:false, missing: [] });
+  }
+  if(c.dispType === "cremation"){
+    var caReq = [["nokName","Authorizing person's name"],["nokRelation","Authorizing person's relationship"],["dispPlace","Crematory name"]];
+    arts.push({ key:"crem", name:"Authorization for cremation", avail:true, missing: missingFor(c, caReq) });
+  } else {
+    arts.push({ key:"crem", name:"Authorization for cremation", avail:false, missing: [] });
+  }
+  return arts;
+}
+function packetInfo(c){
+  var arts = artifactsFor(c);
+  var avail = arts.filter(function(a){ return a.avail; });
+  var ready = avail.filter(function(a){ return a.missing.length === 0; });
+  return { arts: arts, avail: avail.length, ready: ready.length, pct: avail.length ? Math.round(100 * ready.length / avail.length) : 0 };
+}
+function caseTotals(c, st){
+  var items = 0; c.items.forEach(function(it){ items += it.qty * it.unit; });
+  var copies = c.certCopies * st.copyFeeCents;
+  return { items: items, copies: copies, total: items + copies };
+}
+function custodyOpen(c){
+  if(!c.custody.length) return false;
+  var last = c.custody[c.custody.length - 1];
+  return CUSTODY_CLOSED.indexOf(last.event) < 0;
+}
+
+/* ---------------- filing clocks ---------------- */
+function dcClock(c){
+  var f = c.filings, t = todayStr(), out = { steps: [], filed: !!f.dcFiled, overdue: false };
+  var fileDue = addDays(c.decDOD, 10);
+  if(f.dcFiled){ out.headline = "Filed " + fmtDate(f.dcFiled); out.cls = "ok"; return out; }
+  if(!isValidDateString(c.decDOD)){ out.headline = "Date of death needed"; out.cls = "grey"; return out; }
+  var partialDue = addDays(c.decDOD, 1);
+  if(!f.dcSentCert){
+    out.steps.push({ label: "Partial certificate to the certifier — due " + fmtDate(partialDue) + " (24 hours, § 1-317 B)", late: t > partialDue });
+    if(t > partialDue) out.overdue = true;
+  } else {
+    out.steps.push({ label: "Partial certificate sent " + fmtDate(f.dcSentCert), late: false });
+    if(!f.dcMedCert){
+      var medDue = addDays(f.dcSentCert, 5);
+      out.steps.push({ label: "Medical certification due " + fmtDate(medDue) + " (5 days from the certifier receiving it, § 1-317 C)", late: t > medDue });
+      if(t > medDue) out.overdue = true;
+    } else {
+      out.steps.push({ label: "Medical certification received " + fmtDate(f.dcMedCert), late: false });
+      var finDue = addDays(f.dcMedCert, 4);
+      out.steps.push({ label: "Review, sign, and submit by " + fmtDate(finDue) + " (4 days from certification, § 1-317 D)", late: t > finDue });
+      if(t > finDue) out.overdue = true;
+    }
+  }
+  out.steps.push({ label: "File with the State Registrar by " + fmtDate(fileDue) + " (10 calendar days, § 1-317 A)", late: t > fileDue });
+  if(t > fileDue) out.overdue = true;
+  out.headline = out.overdue ? "A step is past due — file at once" : "Not yet filed — due " + fmtDate(fileDue);
+  out.cls = out.overdue ? "bad" : "warn";
+  return out;
+}
+function ssaClock(c){
+  if(c.filings.ssaSent) return { headline: "Sent " + fmtDate(c.filings.ssaSent), cls: "ok" };
+  return { headline: "Not yet sent — no federal deadline; prompt sending is customary", cls: "warn" };
+}
+function vaClock(c){
+  if(c.decVeteran !== "yes") return { headline: "Not applicable — not recorded as a veteran", cls: "grey", na: true };
+  if(c.filings.vaSent) return { headline: "Sent " + fmtDate(c.filings.vaSent), cls: "ok" };
+  if(isValidDateString(c.dispDate)){
+    var due = addYears(c.dispDate, 2);
+    var late = todayStr() > due;
+    return { headline: "Not yet sent — the non-service-connected claim must reach VA by " + fmtDate(due) + " (2 years from disposition)", cls: late ? "bad" : "warn", overdue: late };
+  }
+  return { headline: "Not yet sent — the 2-year claim window runs from the date of burial or cremation", cls: "warn" };
+}
+function filingsOutstanding(c){
+  var n = 0;
+  if(c.status === "active" && !c.filings.dcFiled) n++;
+  if(c.status === "active" && !c.filings.ssaSent) n++;
+  if(c.status === "active" && c.decVeteran === "yes" && !c.filings.vaSent) n++;
+  return n;
+}
+
+/* ---------------- navigation ---------------- */
+function showView(name){
+  var panels = document.querySelectorAll("section.panel");
+  for(var i=0;i<panels.length;i++){ panels[i].classList.toggle("active", panels[i].id === "view-" + name); }
+  var btns = document.querySelectorAll("#mainNav button");
+  for(var j=0;j<btns.length;j++){ btns[j].classList.toggle("active", btns[j].getAttribute("data-view") === name); }
+  if(name === "cases") renderCases();
+  if(name === "packet") renderPacket();
+  if(name === "familylink") renderLink();
+  if(name === "custody") renderCustody();
+  if(name === "filings") renderFilings();
+  window.scrollTo(0,0);
+}
+
+/* ---------------- cases / dashboard ---------------- */
+function renderCases(){
+  var st = state.settings;
+  var active = state.cases.filter(function(c){ return c.status === "active"; });
+  var completePackets = active.filter(function(c){ var p = packetInfo(c); return p.avail > 0 && p.ready === p.avail; }).length;
+  var outFilings = 0; active.forEach(function(c){ outFilings += filingsOutstanding(c); });
+  var openCustody = active.filter(custodyOpen).length;
+  var contracted = 0; active.forEach(function(c){ contracted += caseTotals(c, st).total; });
+  $("dashCards").innerHTML =
+    '<div class="card"><div class="lbl">Active cases</div><div class="big">' + active.length + '</div><div class="note">of ' + state.cases.length + ' on record</div></div>' +
+    '<div class="card good"><div class="lbl">Packets complete</div><div class="big">' + completePackets + ' of ' + active.length + '</div><div class="note">every document ready to print</div></div>' +
+    '<div class="card ' + (outFilings ? "warn" : "good") + '"><div class="lbl">Filings outstanding</div><div class="big">' + outFilings + '</div><div class="note">across active cases</div></div>' +
+    '<div class="card ' + (openCustody ? "warn" : "") + '"><div class="lbl">Custody in progress</div><div class="big">' + openCustody + '</div><div class="note">not yet released or placed</div></div>' +
+    '<div class="card"><div class="lbl">Selections on active cases</div><div class="big">' + money(contracted) + '</div><div class="note">contracts, including certificate copies</div></div>';
+  var late = active.filter(function(c){ return dcClock(c).overdue; });
+  $("dashBanner").innerHTML = late.length
+    ? '<div class="riskbanner"><b>Filing step past due:</b> ' + late.map(function(c){ return esc(fullName(c)) + " (case " + esc(c.caseNo) + ")"; }).join("; ") + '. Open the Filings screen for the step that is late.</div>'
+    : "";
+  var rows = state.cases.map(function(c){
+    var p = packetInfo(c);
+    var pct = p.pct;
+    var pill = pct === 100 ? '<span class="pill ok">Packet complete</span>' : (pct === 0 ? '<span class="pill bad">' + p.ready + ' of ' + p.avail + ' ready</span>' : '<span class="pill warn">' + p.ready + ' of ' + p.avail + ' ready</span>');
+    return "<tr><td>" + esc(c.caseNo || "—") + "</td><td><b>" + esc(fullName(c)) + "</b></td><td>" + fmtDate(c.decDOD) + "</td><td>" + esc(c.dispType ? (c.dispType.charAt(0).toUpperCase() + c.dispType.slice(1)) : "—") + (c.dispPlace ? " · " + esc(c.dispPlace) : "") + "</td><td>" + pill + "</td><td>" + (c.status === "complete" ? "Complete" : "Active") + '</td><td style="white-space:nowrap"><button class="rowbtn" data-act="open" data-id="' + c.id + '">Open</button><button class="rowbtn" data-act="packet" data-id="' + c.id + '">Packet</button><button class="rowbtn" data-act="custody" data-id="' + c.id + '">Custody</button></td></tr>';
+  }).join("");
+  $("caseRows").innerHTML = rows || '<tr><td colspan="7">No cases yet. Choose “New case” to begin.</td></tr>';
+  var btns = document.querySelectorAll("#caseRows .rowbtn");
+  for(var i=0;i<btns.length;i++){ btns[i].addEventListener("click", function(){
+    var id = this.getAttribute("data-id"), act = this.getAttribute("data-act");
+    if(act === "open"){ openCase(id); }
+    if(act === "packet"){ $("pktCaseSel").value = id; showView("packet"); }
+    if(act === "custody"){ $("cusCaseSel").value = id; showView("custody"); }
+  }); }
+}
+
+/* ---------------- case form ---------------- */
+var FORM_STR = STR_FIELDS.concat(["dispType","svcType","decVeteran","decDD214"]);
+function fillForm(c){
+  editingId = c ? c.id : null;
+  var v = c || blankCase();
+  $("f_id").value = v.id || "";
+  FORM_STR.forEach(function(f){ var el = $("f_" + f); if(el) el.value = v[f] || ""; });
+  DATE_FIELDS.forEach(function(f){ var el = $("f_" + f); if(el) el.value = v[f] || ""; });
+  $("f_firstCallDate").value = v.firstCallDate || "";
+  $("f_certCopies").value = v.certCopies;
+  $("f_filDcSent").value = v.filings.dcSentCert; $("f_filDcMed").value = v.filings.dcMedCert;
+  $("f_filDcFiled").value = v.filings.dcFiled; $("f_filSsa").value = v.filings.ssaSent; $("f_filVa").value = v.filings.vaSent;
+  $("f_status").value = v.status;
+  $("formTitle").textContent = c ? ("Case file — " + fullName(c) + " (" + (c.caseNo || "new") + ")") : "Case file — new case";
+  $("deleteCaseBtn").style.display = c ? "inline-block" : "none";
+  $("savedMsg").style.display = "none";
+  renderItems(v);
+}
+function collectForm(existing){
+  var c = existing || blankCase();
+  FORM_STR.forEach(function(f){ var el = $("f_" + f); if(el) c[f] = el.value; });
+  DATE_FIELDS.forEach(function(f){ var el = $("f_" + f); if(el) c[f] = el.value; });
+  c.firstCallDate = $("f_firstCallDate").value;
+  var cc = parseInt($("f_certCopies").value, 10); c.certCopies = isNaN(cc) ? 0 : Math.max(0, Math.min(999, cc));
+  c.items = collectItems();
+  c.filings = { dcSentCert: $("f_filDcSent").value, dcMedCert: $("f_filDcMed").value, dcFiled: $("f_filDcFiled").value, ssaSent: $("f_filSsa").value, vaSent: $("f_filVa").value };
+  c.status = $("f_status").value === "complete" ? "complete" : "active";
+  return sanitizeCase(c) || c;
+}
+function readItemRowsRaw(){
+  var live = [];
+  document.querySelectorAll("#itemsBody tr").forEach(function(tr){
+    var d = tr.querySelector(".it-desc"), q = tr.querySelector(".it-qty"), u = tr.querySelector(".it-unit");
+    if(!d) return;
+    var qty = parseInt(q.value, 10); if(isNaN(qty) || qty < 1) qty = 1; if(qty > 9999) qty = 9999;
+    var unit = parseMoneyToCents(u.value); if(unit === null) unit = 0;
+    live.push({ desc: d.value, qty: qty, unit: unit });
+  });
+  return live;
+}
+function renderItemRows(rows){
+  var tb = $("itemsBody");
+  tb.innerHTML = rows.map(function(it, i){
+    return '<tr><td><div class="inwrap"><input type="text" class="it-desc" data-i="' + i + '" value="' + esc(it.desc) + '"><button type="button" class="mic" data-mic-row="' + i + '" aria-label="Dictate item description">🎤</button></div></td>' +
+      '<td><div class="inwrap"><input type="number" class="it-qty" data-i="' + i + '" min="1" max="9999" value="' + it.qty + '" style="width:100%;padding:9px;border:1px solid var(--line);border-radius:8px;min-height:44px"><button type="button" class="mic" data-mic-qty="' + i + '" aria-label="Dictate quantity">🎤</button></div></td>' +
+      '<td><div class="inwrap"><input type="text" class="it-unit" data-i="' + i + '" value="' + (it.unit/100).toFixed(2) + '" inputmode="decimal" style="width:100%;padding:9px;border:1px solid var(--line);border-radius:8px;min-height:44px"><button type="button" class="mic" data-mic-unit="' + i + '" aria-label="Dictate price">🎤</button></div></td>' +
+      '<td class="it-line" data-i="' + i + '">' + money(it.qty * it.unit) + '</td>' +
+      '<td><button type="button" class="rowbtn it-del" data-i="' + i + '">Remove</button></td></tr>';
+  }).join("");
+  var sync = function(){
+    var items = collectItems();
+    var tmp = blankCase(); tmp.items = items; tmp.certCopies = Math.max(0, parseInt($("f_certCopies").value, 10) || 0);
+    var raw = readItemRowsRaw();
+    document.querySelectorAll(".it-line").forEach(function(td){ var it = raw[+td.getAttribute("data-i")]; td.textContent = it ? money(it.qty * it.unit) : "—"; });
+    $("caseTotalOut").textContent = money(caseTotals(tmp, state.settings).total);
+  };
+  tb.querySelectorAll("input").forEach(function(inp){ inp.addEventListener("input", sync); });
+  tb.querySelectorAll(".it-del").forEach(function(b){ b.addEventListener("click", function(){
+    var raw = readItemRowsRaw();
+    raw.splice(+b.getAttribute("data-i"), 1);
+    renderItemRows(raw); sync();
+  }); });
+  tb.querySelectorAll(".mic[data-mic-row]").forEach(function(b){ b.addEventListener("click", function(){
+    var row = +b.getAttribute("data-mic-row");
+    var target = tb.querySelector('.it-desc[data-i="' + row + '"]');
+    if(target) startDictation(target, b);
+  }); });
+  tb.querySelectorAll(".mic[data-mic-unit]").forEach(function(b){ b.addEventListener("click", function(){
+    var row = +b.getAttribute("data-mic-unit");
+    var target = tb.querySelector('.it-unit[data-i="' + row + '"]');
+    if(target) startDictation(target, b);
+  }); });
+  tb.querySelectorAll(".mic[data-mic-qty]").forEach(function(b){ b.addEventListener("click", function(){
+    var row = +b.getAttribute("data-mic-qty");
+    var target = tb.querySelector('.it-qty[data-i="' + row + '"]');
+    if(target) startDictationNumber(target, b);
+  }); });
+  sync();
+}
+function renderItems(c){ renderItemRows(c.items.map(function(it){ return { desc: it.desc, qty: it.qty, unit: it.unit }; })); }
+function collectItems(){
+  var out = [];
+  document.querySelectorAll("#itemsBody tr").forEach(function(tr){
+    var d = tr.querySelector(".it-desc"), q = tr.querySelector(".it-qty"), u = tr.querySelector(".it-unit");
+    if(!d) return;
+    var desc = trimStr(d.value); if(!desc) return;
+    var qty = parseInt(q.value, 10); if(isNaN(qty) || qty < 1) qty = 1; if(qty > 9999) qty = 9999;
+    var unit = parseMoneyToCents(u.value); if(unit === null) unit = 0;
+    out.push({ desc: desc, qty: qty, unit: unit });
+  });
+  return out;
+}
+function syncTotal(c){ $("caseTotalOut").textContent = money(caseTotals(c, state.settings).total); }
+function openCase(id){ var c = findCase(id); if(!c) return; fillForm(c); showView("form"); }
+function saveCaseFromForm(){
+  var existing = editingId ? findCase(editingId) : null;
+  var c = collectForm(existing ? JSON.parse(JSON.stringify(existing)) : null);
+  var payload = JSON.stringify(c);
+  if(!guardOnce("savecase:" + (c.id || "new"), payload)){ toast("That save was already recorded just now — nothing was duplicated."); return; }
+  if(!existing){
+    state.seq += 1;
+    c.caseNo = String(new Date().getFullYear()) + "-" + state.seq;
+    c.createdAt = todayStr();
+    state.cases.push(c); editingId = c.id;
+  } else {
+    var idx = state.cases.indexOf(existing);
+    c.caseNo = existing.caseNo; c.createdAt = existing.createdAt; c.custody = existing.custody;
+    state.cases[idx] = c;
+  }
+  c.updatedAt = todayStr();
+  save(state);
+  fillForm(c);
+  var p = packetInfo(c);
+  var msg = "Saved — " + fullName(c) + " · case total " + money(caseTotals(c, state.settings).total) + " · packet " + p.ready + " of " + p.avail + " ready.";
+  var sm = $("savedMsg"); sm.textContent = msg; sm.style.display = "inline";
+  toast(msg);
+}
+
+/* ---------------- packet & documents ---------------- */
+function fillCaseSelect(sel, current){
+  var html = state.cases.map(function(c){ return '<option value="' + c.id + '">' + esc(c.caseNo || "—") + " — " + esc(fullName(c)) + "</option>"; }).join("");
+  sel.innerHTML = html || '<option value="">No cases</option>';
+  if(current && findCase(current)) sel.value = current;
+}
+function renderPacket(){
+  var sel = $("pktCaseSel");
+  fillCaseSelect(sel, sel.value);
+  var c = findCase(sel.value) || state.cases[0];
+  if(!c){ $("pktSummary").innerHTML = ""; $("pktMissing").innerHTML = ""; $("pktArtifacts").innerHTML = ""; return; }
+  sel.value = c.id;
+  var p = packetInfo(c);
+  $("pktSummary").innerHTML = "<b>" + esc(fullName(c)) + "</b> — packet " + p.ready + " of " + p.avail + " documents ready (" + p.pct + "%).";
+  var allMissing = [];
+  p.arts.forEach(function(a){ if(a.avail) a.missing.forEach(function(m){ if(allMissing.indexOf(m) < 0) allMissing.push(m); }); });
+  $("pktMissing").innerHTML = allMissing.length
+    ? '<div class="notebox" style="margin-top:14px"><b>Still needed:</b> ' + allMissing.map(esc).join(" · ") + '</div>' : "";
+  $("pktArtifacts").innerHTML = p.arts.map(function(a){
+    if(!a.avail) return '<div class="formcard" style="padding:16px 20px"><b>' + esc(a.name) + '</b> &nbsp;<span class="pill grey">Not applicable to this case</span></div>';
+    var pill = a.missing.length === 0 ? '<span class="pill ok">Ready</span>' : '<span class="pill warn">Missing ' + a.missing.length + " fact" + (a.missing.length > 1 ? "s" : "") + "</span>";
+    var miss = a.missing.length ? '<div style="font-size:13px;color:var(--amber);margin-top:6px">Still needed: ' + a.missing.map(esc).join(" · ") + "</div>" : "";
+    return '<div class="formcard" style="padding:16px 20px"><b>' + esc(a.name) + '</b> &nbsp;' + pill + miss + '<div style="margin-top:10px"><button class="btn plain" data-print-art="' + a.key + '" data-id="' + c.id + '">Print this document</button></div></div>';
+  }).join("") + (c.custody.length ? '<div class="formcard" style="padding:16px 20px"><b>Chain-of-custody record</b> &nbsp;<span class="pill ok">Ready</span><div style="margin-top:10px"><button class="btn plain" data-print-art="custody" data-id="' + c.id + '">Print this document</button></div></div>' : "");
+  document.querySelectorAll("[data-print-art]").forEach(function(b){ b.addEventListener("click", function(){
+    var cc = findCase(b.getAttribute("data-id")); if(cc) printArtifacts(cc, [b.getAttribute("data-print-art")]);
+  }); });
+}
+function docHead(title, c){
+  var st = state.settings;
+  return '<div class="demoline">DEMO RENDERING — a preparation worksheet, not an official form. Review, sign, and file the official document yourself.</div>' +
+    "<h1>" + esc(title) + "</h1>" +
+    "<div>" + esc(st.firmName) + " · " + esc(st.firmAddress) + ", " + esc(st.firmCity) + ", " + esc(st.firmState) + " " + esc(st.firmZip) + "</div>" +
+    "<div>Case " + esc(c.caseNo || "—") + " · " + esc(fullName(c)) + " · Prepared " + fmtDate(todayStr()) + "</div>";
+}
+function kvTable(rows){
+  return "<table>" + rows.map(function(r){ return "<tr><td class='k'>" + esc(r[0]) + "</td><td>" + esc(r[1] || "—") + "</td></tr>"; }).join("") + "</table>";
+}
+function missingBox(a){
+  if(!a || !a.missing.length) return "";
+  return '<div class="missingbox"><b>Not yet complete.</b> Still needed before this document is final: ' + a.missing.map(esc).join(" · ") + ".</div>";
+}
+function artOf(c, key){ var arts = artifactsFor(c); for(var i=0;i<arts.length;i++){ if(arts[i].key === key) return arts[i]; } return null; }
+function docDC(c){
+  var a = artOf(c, "dc");
+  var h = docHead("Death Certificate Worksheet — Oklahoma", c) + missingBox(a);
+  h += "<h2>Decedent — personal data</h2>" + kvTable([
+    ["Name", fullName(c)], ["Social Security number", c.decSSN], ["Date of birth", fmtDate(c.decDOB)], ["Date of death", fmtDate(c.decDOD)],
+    ["Time of death", c.decDeathTime], ["Place of death", c.decDeathPlace], ["City / county of death", [c.decDeathCity, c.decDeathCounty].filter(Boolean).join(", ") + (c.decDeathState ? ", " + c.decDeathState : "")],
+    ["Residence", [c.decAddress, c.decCity, c.decCounty ? c.decCounty + " County" : "", c.decState, c.decZip].filter(Boolean).join(", ")],
+    ["Marital status", c.decMarital], ["Surviving spouse", c.decSpouse], ["Father's name", c.decFatherName], ["Mother's maiden name", c.decMotherMaiden],
+    ["Usual occupation", c.decOccupation], ["Kind of business or industry", c.decIndustry], ["Education", c.decEducation],
+    ["Veteran", c.decVeteran === "yes" ? "Yes" : (c.decVeteran === "no" ? "No" : "")]
+  ]);
+  h += "<h2>Informant</h2>" + kvTable([["Name", c.infName], ["Relationship", c.infRelation], ["Address", [c.infAddress, c.infCity, c.infState, c.infZip].filter(Boolean).join(", ")]]);
+  h += "<h2>Disposition</h2>" + kvTable([["Method", c.dispType], ["Place", c.dispPlace], ["City", c.dispCity], ["Date", fmtDate(c.dispDate)]]);
+  h += '<div class="missingbox"><b>Medical certification.</b> The cause of death is completed by the medical certifier in the state\'s electronic system. It is not collected on this worksheet and must never be entered by the funeral home from family information.</div>';
+  h += '<p style="margin-top:10px">Oklahoma law (63 O.S. § 1-317, 2025 text): the certificate is filed with the State Department of Health within 10 calendar days of the death; the funeral director transmits the partial certificate to the medical certifier within 24 hours; the medical certifier completes the medical certification within 5 calendar days of receiving it; and the funeral director reviews, signs, and submits the completed certificate within 4 calendar days of receiving the medical certification, in the state\'s electronic system. This worksheet prepares the personal data only — the official filing is made by the funeral director in that system.</p>';
+  h += '<div class="sig"><div>Funeral director (sign on the official filing)</div><div>Date</div></div>';
+  return h;
+}
+function docContract(c){
+  var a = artOf(c, "contract");
+  var t = caseTotals(c, state.settings);
+  var h = docHead("Statement of Selections and Charges", c) + missingBox(a);
+  h += kvTable([["Arrangements made by", (c.nokName || "—") + (c.nokRelation ? " (" + c.nokRelation + ")" : "")], ["For", fullName(c)], ["Service", [c.svcType, c.svcPlace, fmtDate(c.svcDate), c.svcTime].filter(Boolean).join(" · ")], ["Disposition", [c.dispType, c.dispPlace, fmtDate(c.dispDate)].filter(Boolean).join(" · ")]]);
+  h += "<h2>Selections</h2><table><tr><th>Item</th><th>Qty</th><th>Each</th><th>Total</th></tr>" +
+    c.items.map(function(it){ return "<tr><td>" + esc(it.desc) + "</td><td>" + it.qty + "</td><td>" + money(it.unit) + "</td><td>" + money(it.qty * it.unit) + "</td></tr>"; }).join("") +
+    "<tr><td>Certified death certificate copies</td><td>" + c.certCopies + "</td><td>" + money(state.settings.copyFeeCents) + "</td><td>" + money(t.copies) + "</td></tr>" +
+    "<tr><td colspan='3'><b>Total</b></td><td><b>" + money(t.total) + "</b></td></tr></table>";
+  h += '<p style="margin-top:10px">This is a preparation worksheet in plain form. Your firm\'s actual agreement must satisfy the FTC Funeral Rule — including the Statement of Funeral Goods and Services Selected — and state law. Use your firm\'s compliant contract form for the agreement itself. <b>VERIFY</b> the current requirements before relying on any contract document.</p>';
+  h += '<div class="sig"><div>Authorizing person (sign the firm\'s contract form)</div><div>Date</div></div><div class="sig"><div>Funeral director</div><div>Date</div></div>';
+  return h;
+}
+function docSSA(c){
+  var a = artOf(c, "ssa");
+  var st = state.settings;
+  var h = docHead("Form SSA-721 — Statement of Death by Funeral Director", c) + missingBox(a);
+  h += '<p>Demo rendering of the worksheet for Form SSA-721 (10-2024), OMB No. 0960-0142. File the official form.</p>';
+  h += "<h2>Entries for the official form</h2>" + kvTable([
+    ["1(a). Name of deceased", fullName(c)], ["1(b). Other names used", ""],
+    ["2. Social Security number", c.decSSN],
+    ["3(a). Date of death", fmtDate(c.decDOD)], ["3(b). Place of death (city, state)", [c.decDeathCity, c.decDeathState].filter(Boolean).join(", ")],
+    ["Date of birth", fmtDate(c.decDOB)],
+    ["Surviving spouse", c.decSpouse], ["Spouse's address", c.decSpouseAddress],
+    ["Funeral firm", st.firmName], ["Firm address", [st.firmAddress, st.firmCity, st.firmState, st.firmZip].filter(Boolean).join(", ")]
+  ]);
+  h += '<p style="margin-top:10px">Certification (as printed on the official form): “I hereby certify that I am an authorized funeral director and prepared for final disposition the body of the person named above. I understand this statement may be used in connection with an application for Social Security benefits.”</p>';
+  h += '<p>Notes from the official form: send the completed form to your local Social Security office, and give pages 2 and 3 of the form to any survivors. If the death is reported through Electronic Death Registration, the form does not need to be sent.</p>';
+  h += '<div class="sig"><div>Funeral director or authorized representative (sign the official form)</div><div>Date</div></div>';
+  return h;
+}
+function docVA(c){
+  var a = artOf(c, "va");
+  var t = caseTotals(c, state.settings);
+  var h = docHead("VA Form 21P-530EZ — Application for Burial Benefits (worksheet)", c) + missingBox(a);
+  h += '<p>Demo rendering of the worksheet for VA Form 21P-530EZ (Oct 2024), "Application for Burial Benefits (Under 38 U.S.C. Chapter 23)." The claimant signs and files the claim; this worksheet only prepares it.</p>';
+  h += "<h2>Veteran</h2>" + kvTable([
+    ["Name", fullName(c)], ["Social Security number", c.decSSN], ["Branch of service", c.decServiceBranch], ["Service dates", c.decServiceDates],
+    ["VA file number", ""], ["Date of birth", fmtDate(c.decDOB)], ["Date of death", fmtDate(c.decDOD)]
+  ]);
+  h += "<h2>Claimant</h2>" + kvTable([["Name", c.nokName], ["Relationship", c.nokRelation], ["Address", [c.nokAddress, c.nokCity, c.nokState, c.nokZip].filter(Boolean).join(", ")]]);
+  h += "<h2>Burial or cremation</h2>" + kvTable([["Disposition", c.dispType], ["Place", c.dispPlace], ["Date", fmtDate(c.dispDate)], ["Total funeral and burial expenses (from the statement of selections)", money(t.total)]]);
+  h += "<h2>Evidence to send with the claim</h2>" + kvTable([
+    ["DD Form 214 or other discharge record", c.decDD214 === "yes" ? "On file" : "Not on file — obtain before filing"],
+    ["Certified death certificate", "Attach a copy"],
+    ["Itemized, receipted bills", "Attach the paid statement of selections"]
+  ]);
+  h += '<p style="margin-top:10px">A claim for the non-service-connected burial allowance must reach VA within 2 years of the burial or cremation. Benefit amounts change and are not printed here — check VA\'s current published table. <b>VERIFY</b> amounts and any form changes before filing.</p>';
+  h += '<div class="sig"><div>Claimant (sign the official form)</div><div>Date</div></div>';
+  return h;
+}
+function docCrem(c){
+  var a = artOf(c, "crem");
+  var h = docHead("Authorization for Cremation", c) + missingBox(a);
+  h += kvTable([["Decedent", fullName(c)], ["Date of death", fmtDate(c.decDOD)], ["Authorizing person", c.nokName], ["Relationship to the decedent", c.nokRelation], ["Crematory", c.dispPlace], ["Cremation date (scheduled)", fmtDate(c.dispDate)]]);
+  h += '<p style="margin-top:12px">The authorizing person named above authorizes ' + esc(state.settings.firmName) + ' to transfer the decedent to the crematory named above and to carry out the cremation. Identification of the decedent by the authorizing person, and any instructions about the cremated remains, are recorded at signing on the firm\'s authorization form.</p>';
+  h += '<p>This worksheet prepares the facts only. The wording of a cremation authorization, and any waiting period before cremation, are set by current Oklahoma law and your crematory\'s requirements — <b>VERIFY</b> both, and use the compliant authorization form for the actual signature.</p>';
+  h += '<div class="sig"><div>Authorizing person</div><div>Date</div></div><div class="sig"><div>Funeral director</div><div>Date</div></div>';
+  return h;
+}
+function docCustody(c){
+  var h = docHead("Chain-of-Custody Record", c);
+  h += "<table><tr><th>Date &amp; time</th><th>Event</th><th>Location</th><th>Recorded by</th><th>Note</th></tr>" +
+    c.custody.map(function(e){ return "<tr><td>" + esc(fmtDateTime(e.ts)) + "</td><td>" + esc(e.event) + "</td><td>" + esc(e.location) + "</td><td>" + esc(e.by) + "</td><td>" + esc(e.note) + "</td></tr>"; }).join("") + "</table>";
+  h += '<div class="sig"><div>Funeral director</div><div>Date</div></div>';
+  return h;
+}
+function docFor(c, key){
+  if(key === "dc") return docDC(c);
+  if(key === "contract") return docContract(c);
+  if(key === "ssa") return docSSA(c);
+  if(key === "va") return docVA(c);
+  if(key === "crem") return docCrem(c);
+  if(key === "custody") return docCustody(c);
+  return "";
+}
+function printArtifacts(c, keys){
+  var parts = keys.map(function(k, i){ return '<div class="doc' + (i > 0 ? " pagebreak" : "") + '">' + docFor(c, k) + "</div>"; });
+  $("printArea").innerHTML = parts.join("");
+  setTimeout(function(){ window.print(); }, 60);
+}
+
+/* ---------------- family form preview ---------------- */
+function renderLink(){
+  var sel = $("linkCaseSel");
+  fillCaseSelect(sel, sel.value);
+  var c = findCase(sel.value) || state.cases[0];
+  if(!c){ $("linkPreview").innerHTML = "No cases yet."; return; }
+  sel.value = c.id;
+  var ro = function(label, val){ return '<div class="fld"><label>' + esc(label) + '</label><input type="text" value="' + esc(val || "") + '" readonly style="width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:8px;min-height:48px;background:var(--greybg)"></div>'; };
+  $("linkPreview").innerHTML =
+    '<h3 style="margin-top:0">For the family of ' + esc(fullName(c)) + '</h3>' +
+    '<p style="color:var(--mut);font-size:13px;margin-bottom:16px">We are sorry for your loss. When you are ready, please complete what you can below. There is no account to create, and you may leave anything you are unsure of — we will go over it together.</p>' +
+    '<div class="grid3">' +
+    ro("Your loved one's full name", fullName(c)) + ro("Date of birth", fmtDate(c.decDOB)) + ro("Date of death", fmtDate(c.decDOD)) +
+    ro("Social Security number", c.decSSN) + ro("Place of death", c.decDeathPlace) + ro("Their home address", [c.decAddress, c.decCity, c.decState, c.decZip].filter(Boolean).join(", ")) +
+    ro("Marital status", c.decMarital) + ro("Surviving spouse", c.decSpouse) + ro("Father's name", c.decFatherName) +
+    ro("Mother's maiden name", c.decMotherMaiden) + ro("Usual occupation", c.decOccupation) + ro("Were they a veteran?", c.decVeteran === "yes" ? "Yes" : (c.decVeteran === "no" ? "No" : "")) +
+    ro("Your name", c.infName) + ro("Your relationship", c.infRelation) + ro("Your address", [c.infAddress, c.infCity, c.infState, c.infZip].filter(Boolean).join(", ")) +
+    "</div>" +
+    '<p style="color:var(--mut);font-size:12.5px;margin-top:14px">In the full service this form is completed by the family from a link and fills the case file directly. In this demo it is shown read-only, and nothing is sent anywhere.</p>';
+}
+
+/* ---------------- custody ---------------- */
+function renderCustody(){
+  var sel = $("cusCaseSel");
+  fillCaseSelect(sel, sel.value);
+  var c = findCase(sel.value) || state.cases[0];
+  if(!c){ $("cusRows").innerHTML = ""; $("cusStatus").innerHTML = ""; return; }
+  sel.value = c.id;
+  $("cusStatus").innerHTML = c.custody.length
+    ? (custodyOpen(c) ? '<span class="pill warn">Custody in progress</span> &nbsp;Last entry: ' + esc(c.custody[c.custody.length-1].event) + " — " + esc(fmtDateTime(c.custody[c.custody.length-1].ts)) : '<span class="pill ok">Custody complete</span> &nbsp;Last entry: ' + esc(c.custody[c.custody.length-1].event))
+    : '<span class="pill grey">No entries yet</span>';
+  $("cusRows").innerHTML = c.custody.length ? c.custody.map(function(e){
+    return "<tr><td>" + esc(fmtDateTime(e.ts)) + "</td><td>" + esc(e.event) + "</td><td>" + esc(e.location || "—") + "</td><td>" + esc(e.by || "—") + "</td><td>" + esc(e.note || "—") + "</td></tr>";
+  }).join("") : '<tr><td colspan="5">No custody entries for this case yet.</td></tr>';
+  if(!$("cusWhen").value) $("cusWhen").value = nowLocalInput();
+}
+function addCustodyFromForm(){
+  var c = findCase($("cusCaseSel").value);
+  if(!c){ toast("Choose a case first."); return; }
+  var entry = { ts: $("cusWhen").value, event: $("cusEvent").value, location: trimStr($("cusLoc").value), by: trimStr($("cusBy").value), note: trimStr($("cusNote").value) };
+  if(!isValidDateTimeString(entry.ts)){ toast("Please set the date and time of the entry."); return; }
+  var payload = JSON.stringify(entry);
+  if(!guardOnce("custody:" + c.id, payload)){ toast("That entry was already recorded just now — nothing was duplicated."); return; }
+  var lastE = c.custody[c.custody.length - 1];
+  if(lastE && lastE.ts === entry.ts && lastE.event === entry.event && lastE.location === entry.location && lastE.by === entry.by && lastE.note === entry.note){
+    toast("That entry is already the last one recorded for this case — nothing was duplicated."); return;
+  }
+  c.custody.push(entry);
+  c.updatedAt = todayStr();
+  save(state);
+  var m = $("cusSavedMsg"); m.textContent = "Entry recorded for " + fullName(c) + " — " + entry.event + "."; m.style.display = "inline";
+  renderCustody();
+}
+
+/* ---------------- filings ---------------- */
+function renderFilings(){
+  var rows = state.cases.filter(function(c){ return c.status === "active"; }).map(function(c){
+    var dc = dcClock(c), ssa = ssaClock(c), va = vaClock(c);
+    function cell(clock, key){
+      var steps = (clock.steps || []).map(function(s){ return '<div style="font-size:12.5px;' + (s.late ? "color:var(--red);font-weight:700" : "color:var(--mut)") + '">' + esc(s.label) + "</div>"; }).join("");
+      var btn = "";
+      if(key === "dc" && !c.filings.dcFiled) btn = '<div style="margin-top:6px"><button class="rowbtn" data-file="dcFiled" data-id="' + c.id + '">Record as filed</button></div>';
+      if(key === "ssa" && !c.filings.ssaSent) btn = '<div style="margin-top:6px"><button class="rowbtn" data-file="ssaSent" data-id="' + c.id + '">Record as sent</button></div>';
+      if(key === "va" && c.decVeteran === "yes" && !c.filings.vaSent) btn = '<div style="margin-top:6px"><button class="rowbtn" data-file="vaSent" data-id="' + c.id + '">Record as sent</button></div>';
+      return '<span class="pill ' + clock.cls + '">' + esc(clock.headline) + "</span>" + steps + btn;
+    }
+    return "<tr><td><b>" + esc(fullName(c)) + "</b><br><span style='color:var(--mut)'>Case " + esc(c.caseNo || "—") + " · died " + fmtDate(c.decDOD) + "</span></td><td>" + cell(dc, "dc") + "</td><td>" + cell(ssa, "ssa") + "</td><td>" + cell(va, "va") + "</td></tr>";
+  }).join("");
+  $("filRows").innerHTML = rows || '<tr><td colspan="4">No active cases.</td></tr>';
+  var anyLate = state.cases.some(function(c){ return c.status === "active" && (dcClock(c).overdue || vaClock(c).overdue); });
+  $("filBanner").innerHTML = anyLate ? '<div class="riskbanner"><b>At least one filing step below is past its date.</b> The late step is named in red on its line.</div>' : "";
+  document.querySelectorAll("[data-file]").forEach(function(b){ b.addEventListener("click", function(){
+    var c = findCase(b.getAttribute("data-id")); if(!c) return;
+    var key = b.getAttribute("data-file");
+    if(!guardOnce("filing:" + c.id + ":" + key, todayStr())){ toast("Already recorded just now."); return; }
+    c.filings[key] = todayStr(); c.updatedAt = todayStr(); save(state); renderFilings();
+    toast("Recorded for " + fullName(c) + " — " + todayStr() + ".");
+  }); });
+}
+
+/* ---------------- settings ---------------- */
+function fillSettings(){
+  var st = state.settings;
+  $("s_firmName").value = st.firmName; $("s_firmAddress").value = st.firmAddress; $("s_firmCity").value = st.firmCity;
+  $("s_firmState").value = st.firmState; $("s_firmZip").value = st.firmZip; $("s_director").value = st.director;
+  $("s_copyFee").value = (st.copyFeeCents/100).toFixed(2);
+  $("cbFirm").textContent = st.firmName;
+}
+function saveSettingsFromForm(){
+  var payload = [$("s_firmName").value, $("s_firmAddress").value, $("s_copyFee").value].join("|");
+  if(!guardOnce("settings", payload)){ toast("Those settings were already saved just now."); return; }
+  var fee = parseMoneyToCents($("s_copyFee").value);
+  state.settings = sanitizeSettings({
+    firmName: $("s_firmName").value, firmAddress: $("s_firmAddress").value, firmCity: $("s_firmCity").value,
+    firmState: $("s_firmState").value, firmZip: $("s_firmZip").value, director: $("s_director").value,
+    copyFeeCents: fee === null ? state.settings.copyFeeCents : fee
+  });
+  save(state);
+  fillSettings();
+  var m = $("settingsSaved"); m.textContent = "Settings saved — " + state.settings.firmName + " now appears on the documents."; m.style.display = "inline";
+}
+
+/* ---------------- pilot ---------------- */
+function pilotReady(){
+  var okFields = trimStr($("pilotFirm").value) && trimStr($("pilotName").value) && trimStr($("pilotEmail").value) && trimStr($("pilotCases").value);
+  $("pilotBtn").disabled = !($("pilotAgree").checked && okFields);
+}
+function sendPilot(){
+  var firm = trimStr($("pilotFirm").value), name = trimStr($("pilotName").value), email = trimStr($("pilotEmail").value), cases = trimStr($("pilotCases").value);
+  var subject = "FinalPacket pilot request — first 10 cases for $99";
+  var body = "Funeral home: " + firm + "\nName: " + name + "\nEmail: " + email + "\nCases per year: " + cases + "\n\n" +
+    "We would like to ask about the FinalPacket pilot: the first 10 case packets prepared for $99.\n\n" +
+    "We understand FinalPacket prepares paperwork only. Our firm reviews, signs, and files every document, and nothing is submitted to any agency by FinalPacket.";
+  if(!guardOnce("pilot", body)){ toast("That request was already opened just now — check your email program."); return; }
+  window.location.href = "mailto:whitewolfbackoffice@gmail.com?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
+}
+
+/* ---------------- backup / import / reset ---------------- */
+function exportBackup(){
+  var blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
+  var a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "finalpacket-backup.json";
+  document.body.appendChild(a); a.click();
+  setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 400);
+  toast("Backup downloaded — keep it somewhere safe.");
+}
+function importBackupFile(file){
+  var reader = new FileReader();
+  reader.onload = function(){
+    var p = null;
+    try{ p = JSON.parse(String(reader.result)); }catch(e){ p = null; }
+    if(!isPlainObject(p) || !Array.isArray(p.cases)){ toast("That file could not be read as a FinalPacket backup. Nothing was changed."); return; }
+    state = sanitizeState(p);
+    save(state);
+    fillSettings(); fillForm(state.cases[0] || null); showView("cases");
+    toast("Backup restored — " + state.cases.length + " case(s) on record.");
+  };
+  reader.onerror = function(){ toast("That file could not be read. Nothing was changed."); };
+  reader.readAsText(file);
+}
+
+/* ---------------- voice entry (one press) ---------------- */
+var activeRec = null;
+function startDictation(input, btn){
+  var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if(!SR){
+    toast("Voice entry is not available on this device or browser — typing works as always.");
+    return;
+  }
+  if(activeRec){ try{ activeRec.stop(); }catch(e){} activeRec = null; if(btn) btn.classList.remove("listening"); return; }
+  var rec = new SR();
+  rec.lang = "en-US"; rec.interimResults = false; rec.maxAlternatives = 1;
+  if(btn) btn.classList.add("listening");
+  rec.onresult = function(ev){
+    var text = "";
+    for(var i=0;i<ev.results.length;i++){ text += ev.results[i][0].transcript; }
+    text = text.trim();
+    if(text){ input.value = text; input.dispatchEvent(new Event("input", { bubbles: true })); input.dispatchEvent(new Event("change", { bubbles: true })); }
+    else { toast("Didn't catch that — try again or type it."); }
+  };
+  rec.onerror = function(ev){
+    if(ev.error !== "aborted") toast("Voice entry stopped (" + ev.error + ") — typing works as always.");
+  };
+  rec.onend = function(){ if(btn) btn.classList.remove("listening"); if(activeRec === rec) activeRec = null; };
+  activeRec = rec;
+  try{ rec.start(); }catch(e){ if(btn) btn.classList.remove("listening"); activeRec = null; toast("Voice entry could not start — typing works as always."); }
+}
+function startDictationNumber(input, btn){
+  var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if(!SR){
+    toast("Voice entry is not available on this device or browser — typing works as always.");
+    return;
+  }
+  if(activeRec){ try{ activeRec.stop(); }catch(e){} activeRec = null; if(btn) btn.classList.remove("listening"); return; }
+  var rec = new SR();
+  rec.lang = "en-US"; rec.interimResults = false; rec.maxAlternatives = 1;
+  if(btn) btn.classList.add("listening");
+  rec.onresult = function(ev){
+    var text = "";
+    for(var i=0;i<ev.results.length;i++){ text += ev.results[i][0].transcript; }
+    var m = text.match(/\d+/);
+    if(m){ input.value = m[0]; input.dispatchEvent(new Event("input", { bubbles: true })); input.dispatchEvent(new Event("change", { bubbles: true })); }
+    else { toast("Didn't catch a number there — try again or type it."); }
+  };
+  rec.onerror = function(ev){
+    if(ev.error !== "aborted") toast("Voice entry stopped (" + ev.error + ") — typing works as always.");
+  };
+  rec.onend = function(){ if(btn) btn.classList.remove("listening"); if(activeRec === rec) activeRec = null; };
+  activeRec = rec;
+  try{ rec.start(); }catch(e){ if(btn) btn.classList.remove("listening"); activeRec = null; toast("Voice entry could not start — typing works as always."); }
+}
+function wireMics(root){
+  (root || document).querySelectorAll(".mic[data-for]").forEach(function(b){
+    if(b.getAttribute("data-wired")) return;
+    b.setAttribute("data-wired", "1");
+    b.addEventListener("click", function(){
+      var input = $(b.getAttribute("data-for"));
+      if(input) startDictation(input, b);
+    });
+  });
+}
+
+/* ---------------- wiring & init ---------------- */
+document.querySelectorAll("#mainNav button").forEach(function(b){ b.addEventListener("click", function(){ showView(b.getAttribute("data-view")); }); });
+$("newCaseBtn").addEventListener("click", function(){ fillForm(null); showView("form"); });
+$("saveCaseBtn").addEventListener("click", saveCaseFromForm);
+$("deleteCaseBtn").addEventListener("click", function(){
+  var c = editingId ? findCase(editingId) : null; if(!c) return;
+  if(!confirm("Delete the case for " + fullName(c) + "? This cannot be undone.")) return;
+  state.cases = state.cases.filter(function(x){ return x.id !== c.id; });
+  save(state); fillForm(null); showView("cases"); toast("Case deleted.");
+});
+$("addItemBtn").addEventListener("click", function(){
+  var raw = readItemRowsRaw();
+  raw.push({ desc: "", qty: 1, unit: 0 });
+  renderItemRows(raw);
+  var descs = document.querySelectorAll("#itemsBody .it-desc");
+  if(descs.length) descs[descs.length - 1].focus();
+});
+$("f_certCopies").addEventListener("input", function(){
+  var cur = collectForm(editingId ? findCase(editingId) : null);
+  syncTotal(cur);
+});
+$("pktCaseSel").addEventListener("change", renderPacket);
+$("linkCaseSel").addEventListener("change", renderLink);
+$("cusCaseSel").addEventListener("change", renderCustody);
+$("addCustodyBtn").addEventListener("click", addCustodyFromForm);
+$("printPacketBtn").addEventListener("click", function(){
+  var c = findCase($("pktCaseSel").value); if(!c) return;
+  var p = packetInfo(c);
+  var keys = p.arts.filter(function(a){ return a.avail && a.missing.length === 0; }).map(function(a){ return a.key; });
+  if(c.custody.length) keys.push("custody");
+  if(!keys.length){ toast("No documents are complete yet for this case — the missing facts are listed above."); return; }
+  printArtifacts(c, keys);
+});
+["pilotFirm","pilotName","pilotEmail","pilotCases"].forEach(function(id){ $(id).addEventListener("input", pilotReady); $(id).addEventListener("change", pilotReady); });
+$("pilotAgree").addEventListener("change", pilotReady);
+$("pilotBtn").addEventListener("click", sendPilot);
+$("saveSettingsBtn").addEventListener("click", saveSettingsFromForm);
+$("exportBtn").addEventListener("click", exportBackup);
+$("importFile").addEventListener("change", function(){ if(this.files && this.files[0]) importBackupFile(this.files[0]); this.value = ""; });
+$("resetBtn").addEventListener("click", function(){
+  if(!confirm("Reset the demo? Your current records will be replaced by the sample cases.")) return;
+  state = seed(); save(state); fillSettings(); fillForm(state.cases[0]); showView("cases"); toast("Demo reset to the sample cases.");
+});
+
+load();
+fillSettings();
+fillForm(state.cases[0] || null);
+wireMics(document);
+renderCases();
+</script>
+</body>
+</html>
