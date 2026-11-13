@@ -112,10 +112,44 @@
     nav{padding:0 8px;}
     nav button{padding:12px 9px; font-size:13.5px;}
   }
+  /* ===== FinalPacket v0.1.1-demo: modern app-look redesign (BirdTally pattern, charcoal/brass palette) ===== */
+  :root{--bar-h:64px;--shadow:0 2px 6px rgba(35,39,46,.07),0 10px 26px rgba(35,39,46,.10);}
+  body{padding-bottom:calc(var(--bar-h) + env(safe-area-inset-bottom) + 16px);}
+  header{position:sticky;top:0;z-index:40;background:linear-gradient(135deg,#262b31,#39404a 58%,#33526e);box-shadow:0 2px 12px rgba(35,39,46,.35);}
+  header .mark{flex:0 0 auto;width:50px;height:50px;border-radius:15px;background:linear-gradient(145deg,#d9ba6a,#8a6d2f);display:flex;align-items:center;justify-content:center;font-size:27px;box-shadow:inset 0 1px 0 rgba(255,255,255,.55),0 3px 8px rgba(0,0,0,.25);}
+  /* Bottom tab bar. Nav buttons are static markup, so each carries real
+     icon/label spans; visible labels are shortened ("File", "Family",
+     "Setup") so 9 tabs fit at 390px, and each button's aria-label keeps
+     the full original name. The bar's background is non-interactive
+     chrome: like the toast, it must never swallow a tap meant for
+     content beneath it, so only the tab buttons themselves take
+     pointer events (batch-9 PumpLedger lesson). */
+  nav{position:fixed;left:0;right:0;bottom:0;top:auto;z-index:60;background:rgba(255,255,255,.97);border-top:1px solid var(--line);border-bottom:none;box-shadow:0 -3px 16px rgba(35,39,46,.14);padding:6px 8px calc(6px + env(safe-area-inset-bottom));flex-wrap:nowrap;justify-content:center;pointer-events:none;}
+  nav button{flex:1 1 0;min-width:0;max-width:110px;min-height:56px;background:none;border-bottom:none;color:var(--mut);border-radius:14px;padding:4px 1px 5px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;font-weight:700;pointer-events:auto;}
+  nav button .ic{font-size:18px;line-height:1.15;padding:3px 10px;border-radius:999px;transition:background .15s;pointer-events:none;}
+  nav button .lb{font-size:10px;letter-spacing:.1px;white-space:nowrap;pointer-events:none;}
+  nav button.active{color:var(--ink);border-bottom:none;}
+  nav button.active .ic{background:var(--accent);box-shadow:0 2px 6px rgba(90,110,87,.45);}
+  section.panel.active{animation:fpTabIn .28s ease both;}
+  @keyframes fpTabIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .card,.formcard,.tblwrap,.riskbanner,.okbanner,.notebox,.pricecard,details.help{border-radius:16px;box-shadow:var(--shadow);}
+  .btn{border-radius:999px;}
+  .rowbtn{border-radius:999px;}
+  .inwrap input,.inwrap textarea,.fld > input,.fld > select,.fld > textarea{border-radius:12px;}
+  .mic{border-radius:50%;}
+  .toast{bottom:calc(var(--bar-h) + env(safe-area-inset-bottom) + 14px);border-radius:999px;z-index:70;pointer-events:none;}
+  /* No terms gate exists in this demo (verified — the only checkbox gate
+     is the pre-existing pilot-agreement checkbox in Pricing, untouched),
+     so there is no welcome screen to restyle and no re-prompt risk. */
+  /* scroll-into-view must never park a control under the fixed bar or
+     the sticky header (batch-8 lesson) */
+  button,input,select,textarea,a.btn,summary{scroll-margin-bottom:calc(var(--bar-h) + env(safe-area-inset-bottom) + 32px);scroll-margin-top:96px;}
+  @media print{body{padding-bottom:0;}}
 </style>
 </head>
 <body>
 <header>
+  <div class="mark" aria-hidden="true">🗂️</div>
   <div>
     <div class="logo">Final<span>Packet</span></div>
     <div class="sub">Case paperwork packet for funeral homes &amp; crematories</div>
@@ -128,15 +162,15 @@
   <span>FinalPacket prepares paperwork. <b>You review, sign, and file.</b></span>
 </div>
 <nav id="mainNav">
-  <button data-view="cases" class="active">Cases</button>
-  <button data-view="form">Case file</button>
-  <button data-view="packet">Packet</button>
-  <button data-view="familylink">Family form</button>
-  <button data-view="custody">Custody log</button>
-  <button data-view="filings">Filings</button>
-  <button data-view="pricing">Pricing &amp; pilot</button>
-  <button data-view="help">Help</button>
-  <button data-view="settings">Settings</button>
+  <button data-view="cases" class="active" aria-label="Cases"><span class="ic" aria-hidden="true">🏠</span><span class="lb">Cases</span></button>
+  <button data-view="form" aria-label="Case file"><span class="ic" aria-hidden="true">📝</span><span class="lb">File</span></button>
+  <button data-view="packet" aria-label="Packet"><span class="ic" aria-hidden="true">📦</span><span class="lb">Packet</span></button>
+  <button data-view="familylink" aria-label="Family form"><span class="ic" aria-hidden="true">👪</span><span class="lb">Family</span></button>
+  <button data-view="custody" aria-label="Custody log"><span class="ic" aria-hidden="true">🔗</span><span class="lb">Custody</span></button>
+  <button data-view="filings" aria-label="Filings"><span class="ic" aria-hidden="true">📅</span><span class="lb">Filings</span></button>
+  <button data-view="pricing" aria-label="Pricing &amp; pilot"><span class="ic" aria-hidden="true">💲</span><span class="lb">Pricing</span></button>
+  <button data-view="help" aria-label="Help"><span class="ic" aria-hidden="true">❓</span><span class="lb">Help</span></button>
+  <button data-view="settings" aria-label="Settings"><span class="ic" aria-hidden="true">⚙️</span><span class="lb">Setup</span></button>
 </nav>
 <main>
 <div id="recoverBanner" class="riskbanner" style="display:none"></div>
@@ -407,7 +441,7 @@
   <div class="formcard">
     <h3 style="margin-top:0">Questions</h3>
     <p style="color:var(--ink2);font-size:13.5px;margin-bottom:12px">Write to us from your own email program. Nothing is sent until you press send there.</p>
-    <a class="btn" id="emailUsBtn" href="mailto:whitewolfbackoffice@gmail.com?subject=FinalPacket%20help%20%E2%80%94%20v0.1.0-demo&amp;body=Tell%20us%20what%20you%20were%20trying%20to%20do%20and%20what%20happened%3A%0A%0A">Email us</a>
+    <a class="btn" id="emailUsBtn" href="mailto:whitewolfbackoffice@gmail.com?subject=FinalPacket%20help%20%E2%80%94%20v0.1.1-demo&amp;body=Tell%20us%20what%20you%20were%20trying%20to%20do%20and%20what%20happened%3A%0A%0A">Email us</a>
   </div>
 </section>
 
@@ -437,13 +471,13 @@
   </div>
 </section>
 </main>
-<footer><b>FinalPacket v0.1.0-demo</b> · White Wolf Apps · Demonstration software with fictional sample data. Your data lives on this device only — export a backup from Settings regularly. FinalPacket prepares paperwork; it does not file, submit, or transmit anything.</footer>
+<footer><b>FinalPacket v0.1.1-demo</b> · White Wolf Apps · Demonstration software with fictional sample data. Your data lives on this device only — export a backup from Settings regularly. FinalPacket prepares paperwork; it does not file, submit, or transmit anything.</footer>
 <div id="printArea"></div>
 <div class="toast" id="toast"></div>
 
 <script>
 "use strict";
-var VERSION = "0.1.0-demo";
+var VERSION = "0.1.1-demo";
 var LS_KEY = "finalpacket_demo_v1";
 var state = null;
 var editingId = null;
